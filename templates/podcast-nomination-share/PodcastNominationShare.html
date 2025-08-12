@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast Nomination Share</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: hsl(224, 71.4%, 4.1%);
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px 16px;
+            position: relative;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-title {
+            margin-bottom: 80px;
+        }
+
+        .main-title h1 {
+            font-size: 48px;
+            font-weight: 900;
+            color: white;
+            line-height: 1.1;
+            margin: 0 0 24px 0;
+            letter-spacing: -0.025em;
+        }
+
+        .guest-name {
+            background: linear-gradient(to right, #f59e0b, #ea580c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .podcast-name {
+            background: linear-gradient(to right, #9333ea, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: #cbd5e1;
+            max-width: 672px;
+            margin: 0 auto;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .speaker-podcast-connection {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 64px;
+            margin-top: 80px;
+            margin-bottom: 10px;
+        }
+
+        .profile-link {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .guest-glow {
+            position: absolute;
+            top: -16px;
+            left: -16px;
+            right: -16px;
+            bottom: -16px;
+            background: linear-gradient(to right, #fbbf24, #f97316);
+            border-radius: 50%;
+            filter: blur(12px);
+            opacity: 0.75;
+        }
+
+        .podcast-glow {
+            position: absolute;
+            top: -16px;
+            left: -16px;
+            right: -16px;
+            bottom: -16px;
+            background: linear-gradient(to right, #a855f7, #3b82f6);
+            border-radius: 20px;
+            filter: blur(12px);
+            opacity: 0.75;
+        }
+
+        .profile-image-container {
+            position: relative;
+            background: white;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .podcast-image-container {
+            position: relative;
+            background: white;
+            padding: 8px;
+            border-radius: 20px;
+        }
+
+        .profile-image {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .podcast-image {
+            width: 160px;
+            height: 160px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+
+        .guest-placeholder {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #dc2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guest-initials {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .podcast-placeholder {
+            width: 160px;
+            height: 160px;
+            border-radius: 16px;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .podcast-placeholder-text {
+            text-align: center;
+            color: white;
+        }
+
+        .podcast-placeholder-text div:first-child {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            letter-spacing: 0.05em;
+        }
+
+        .podcast-placeholder-text div:last-child {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .checkmark-badge {
+            position: absolute;
+            bottom: -4px;
+            right: -4px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            padding: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 4px solid white;
+        }
+
+        .checkmark-icon {
+            height: 24px;
+            width: 24px;
+        }
+
+        .profile-info {
+            margin-top: 24px;
+            text-align: center;
+            max-width: 200px;
+        }
+
+        .guest-badge {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #92400e;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .podcast-badge {
+            background: #f3e8ff;
+            border: 1px solid #e9d5ff;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #7c3aed;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Dark mode styles */
+        .dark .guest-badge {
+            background: rgba(120, 113, 108, 0.2);
+            border: 1px solid #57534e;
+            color: #fbbf24;
+        }
+
+        .dark .podcast-badge {
+            background: rgba(147, 51, 234, 0.2);
+            border: 1px solid #7c3aed;
+            color: #c4b5fd;
+        }
+
+        /* Force dark mode since we're using a dark theme */
+        .guest-badge {
+            background: rgba(120, 113, 108, 0.2) !important;
+            border: 1px solid #57534e !important;
+            color: #fbbf24 !important;
+        }
+
+        .podcast-badge {
+            background: rgba(147, 51, 234, 0.2) !important;
+            border: 1px solid #7c3aed !important;
+            color: #c4b5fd !important;
+        }
+
+        .profile-bio {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 8px;
+            line-height: 1.4;
+            font-weight: 400;
+        }
+
+        .podcast-followers {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 400;
+        }
+
+        .connection-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 32px;
+        }
+
+        .arrow-icon {
+            width: 64px;
+            height: 64px;
+            color: white;
+        }
+
+        .arrow-text {
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .speaker-podcast-connection {
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            .main-title h1 {
+                font-size: 36px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+        }
+
+        /* Powered by dLogos Banner */
+        .dlogos-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, #a855f7, #c084fc);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 -4px 20px rgba(147, 51, 234, 0.3);
+        }
+
+        .dlogos-banner-text {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.025em;
+        }
+
+        .dlogos-logo {
+            height: 24px;
+            width: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        /* dLogos Branding Section */
+        .dlogos-branding {
+            text-align: center;
+            margin: 0px;
+        }
+
+        .dlogos-branding-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .dlogos-branding-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .dlogos-branding-text {
+            color: white;
+            font-size: 40px;
+            font-weight: 900;
+            letter-spacing: -0.025em;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-content">
+            <!-- Main Title -->
+            <div class="main-title">
+                <h1>
+                    Get <span class="guest-name" data-dynamic="guestName">Coleman Hughes</span>
+                    <br>
+                    on <span class="podcast-name" data-dynamic="podcastName">The Joe Rogan Experience</span>
+                </h1>
+                <p class="subtitle" data-dynamic="subtitle">
+                    Join 3,247 people who want to see this conversation happen
+                </p>
+            </div>
+
+            <!-- Speaker & Podcast Visual Connection -->
+            <div class="speaker-podcast-connection">
+                <!-- Guest Profile -->
+                <a href="/speakers" class="profile-link" data-dynamic="guestLink">
+                    <div class="profile-container">
+                        <div class="guest-glow"></div>
+                        <div class="profile-image-container">
+                            <div class="guest-placeholder" data-dynamic="guestImage">
+                                <span class="guest-initials" data-dynamic="guestInitials">CH</span>
+                            </div>
+                        </div>
+                        <div class="checkmark-badge">
+                            <svg class="checkmark-icon" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="guest-badge" data-dynamic="guestBadge">Coleman Hughes</div>
+                        <div class="profile-bio" data-dynamic="guestBio">Conversations w/Coleman Podcast | Forbes 30 Under 30</div>
+                    </div>
+                </a>
+
+                <!-- Connection Arrow -->
+                <div class="connection-arrow">
+                    <div>
+                        <svg class="arrow-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="arrow-text">TO APPEAR ON</div>
+                </div>
+
+                <!-- Podcast -->
+                <a href="/podcasts/the-joe-rogan-experience" class="profile-link" data-dynamic="podcastLink">
+                    <div class="profile-container">
+                        <div class="podcast-glow"></div>
+                        <div class="podcast-image-container">
+                            <div class="podcast-placeholder" data-dynamic="podcastImage">
+                                <div class="podcast-placeholder-text">
+                                    <div>THE JOE ROGAN</div>
+                                    <div>EXPERIENCE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="podcast-badge" data-dynamic="podcastBadge">The Joe Rogan Experience</div>
+                        <div class="podcast-followers" data-dynamic="podcastFollowers">11,200,000 followers</div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- dLogos Branding Section -->
+            <div class="dlogos-branding">
+                <div class="dlogos-branding-content">
+                    <svg width="40" height="40" viewBox="0 0 178 178" fill="none" xmlns="http://www.w3.org/2000/svg" class="dlogos-branding-logo">
+                        <circle cx="89.5" cy="89.5" r="87.5" fill="url(#paint0_linear_40000767_1091)"/>
+                        <circle cx="90" cy="90" r="78" fill="black"/>
+                        <path d="M106.43 46.681C106.43 76.5 106.43 93 106.43 114.365H97.0861V111.037C94.9906 113.496 91.5824 115.062 88.3267 115.062C79.9548 115.062 72.9007 108.396 72.9007 97.6984C72.9007 86.846 79.7222 79.5593 90.2646 79.5593C92.6676 79.5593 95.2257 80.0245 97.0861 80.7996V47.0686L106.43 46.681Z" fill="white"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M89.4179 129.524C111.463 129.524 129.334 111.653 129.334 89.6083C129.334 67.5635 111.463 49.6926 89.4179 49.6926C67.3731 49.6926 49.5022 67.5635 49.5022 89.6083C49.5022 111.653 67.3731 129.524 89.4179 129.524ZM89.4179 137.623C115.936 137.623 137.432 116.126 137.432 89.6083C137.432 63.0906 115.936 41.5938 89.4179 41.5938C62.9002 41.5938 41.4033 63.0906 41.4033 89.6083C41.4033 116.126 62.9002 137.623 89.4179 137.623Z" fill="white"/>
+                        <defs>
+                            <linearGradient id="paint0_linear_40000767_1091" x1="177" y1="56.5" x2="14.5" y2="128" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#FDD558"/>
+                                <stop offset="1" stop-color="#817050"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="dlogos-branding-text">dLogos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
