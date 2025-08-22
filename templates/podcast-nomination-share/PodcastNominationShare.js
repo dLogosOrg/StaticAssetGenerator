@@ -1,7 +1,7 @@
 import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
-import { uploadImageBufferToSupabase } from '../../utils/supabaseUploader.js';
+import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/supabaseHelpers.js';
 import { PODCAST_NOMINATION_SHARE_DIR, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
@@ -13,6 +13,7 @@ const PodcastNominationPropsSchema = z.object({
   podcastFollowers: z.number().int().min(0, "Followers must be a non-negative integer"),
   podcastImage: z.string().url("Podcast image must be a valid URL"),
   voteCount: z.number().int().min(0, "Vote count must be a non-negative integer"),
+  nominationId: z.uuid("Nomination ID must be a valid UUID"),
 });
 
 export async function PodcastNominationShare({ props, templateType }) {
@@ -30,6 +31,7 @@ export async function PodcastNominationShare({ props, templateType }) {
     }
 
     const safeProps = validationResult.data;
+    const { nominationId, ...templateProps } = safeProps;
     const fileName = `podcast-nomination-${Date.now()}`;
 
     // Read HTML template
@@ -37,19 +39,19 @@ export async function PodcastNominationShare({ props, templateType }) {
     const { dom, document } = MapperUtils.createDOM(html);
 
     const dataMappings = {
-      'guestName': safeProps.guestName,
-      'podcastName': safeProps.podcastName,
-      'subtitle': MapperUtils.transformers.createVoteSubtitle(safeProps.voteCount),
-      'guestInitials': MapperUtils.transformers.extractInitials(safeProps.guestName),
-      'guestBadge': safeProps.guestName,
-      'guestBio': safeProps.guestBio,
-      'podcastBadge': safeProps.podcastName,
-      'podcastFollowers': MapperUtils.transformers.formatFollowers(safeProps.podcastFollowers)
+      'guestName': templateProps.guestName,
+      'podcastName': templateProps.podcastName,
+      'subtitle': MapperUtils.transformers.createVoteSubtitle(templateProps.voteCount),
+      'guestInitials': MapperUtils.transformers.extractInitials(templateProps.guestName),
+      'guestBadge': templateProps.guestName,
+      'guestBio': templateProps.guestBio,
+      'podcastBadge': templateProps.podcastName,
+      'podcastFollowers': MapperUtils.transformers.formatFollowers(templateProps.podcastFollowers)
     };
 
     MapperUtils.mapTextProperties(document, dataMappings);
-    MapperUtils.replaceWithImage(document, 'guestImage', safeProps.guestImage, safeProps.guestName, 'profile-image');
-    MapperUtils.replaceWithImage(document, 'podcastImage', safeProps.podcastImage, safeProps.podcastName, 'podcast-image');
+    MapperUtils.replaceWithImage(document, 'guestImage', templateProps.guestImage, templateProps.guestName, 'profile-image');
+    MapperUtils.replaceWithImage(document, 'podcastImage', templateProps.podcastImage, templateProps.podcastName, 'podcast-image');
 
     const finalHtml = dom.serialize();
 
@@ -62,13 +64,36 @@ export async function PodcastNominationShare({ props, templateType }) {
 
     // Step 2: Upload the image
     console.log('📤 Uploading image to Supabase...');
-    return await uploadImageBufferToSupabase({
+    const uploadResult = await uploadImageBufferToSupabase({
       buffer: imageResult.buffer,
       templateType,
       fileName,
       bucket: SUPABASE_SEO_IMAGES_BUCKET,
       baseDir: PODCAST_NOMINATION_SHARE_DIR,
     });
+
+    if (!uploadResult.success) {
+      return { success: false, error: uploadResult.error || 'Upload failed' };
+    }
+
+    // Step 3: Update the podcast_nomination table with the image URL
+    console.log('🔄 Updating podcast_nomination table with image URL...');
+    const updateResult = await updateSupabaseColumn({
+      tableName: 'podcast_nomination',
+      primaryKeyValue: nominationId,
+      primaryKeyColumn: 'id',
+      columnName: 'image_url',
+      columnValue: uploadResult.publicUrl
+    });
+    
+    if (!updateResult.success) {
+      console.error('❌ Failed to update podcast_nomination table:', updateResult.error);
+      return { success: false, error: `Database update failed: ${updateResult.error}` };
+    }
+    
+    console.log('✅ Successfully updated podcast_nomination table with image URL');
+
+    return uploadResult;
 
   } catch (error) {
     console.error('PodcastNominationShare handler failed:', error);

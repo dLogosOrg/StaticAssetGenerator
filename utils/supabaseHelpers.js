@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import { createClient } from '@supabase/supabase-js';
 import { FALLBACK_BUCKET } from '../constants.js';
@@ -12,7 +11,7 @@ function getSupabaseClient() {
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY/ SUPABASE_ANON_KEY environment variables');
+    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables');
   }
 
   cachedSupabaseClient = createClient(supabaseUrl, supabaseKey, {
@@ -23,6 +22,10 @@ function getSupabaseClient() {
 
   return cachedSupabaseClient;
 }
+
+// ============================================================================
+// STORAGE UTILITIES
+// ============================================================================
 
 function sanitizeFileName(fileName, defaultExt = 'png') {
   const base = fileName && String(fileName).trim().length > 0
@@ -75,7 +78,7 @@ export async function uploadImageBufferToSupabase({
   templateType,
   fileName,
   bucket,
-  baseDir,
+  baseDir = "",
 }) {
   try {
     if (!buffer) {
@@ -108,5 +111,52 @@ export async function uploadImageBufferToSupabase({
     return { success: false, error: error.message };
   }
 }
+
+// ============================================================================
+// DATABASE UTILITIES
+// ============================================================================
+
+export async function updateSupabaseColumn({
+  tableName,
+  primaryKeyValue,
+  primaryKeyColumn = 'id',
+  columnName,
+  columnValue
+}) {
+  try {
+    if (!tableName) throw new Error('tableName is required');
+    if (primaryKeyValue === undefined || primaryKeyValue === null) throw new Error('primaryKeyValue is required');
+    if (!columnName) throw new Error('columnName is required');
+
+    const supabase = getSupabaseClient();
+    
+    const updateData = {
+      [columnName]: columnValue
+    };
+
+    const { data, error } = await supabase
+      .from(tableName)
+      .update(updateData)
+      .eq(primaryKeyColumn, primaryKeyValue)
+      .select();
+
+    if (error) {
+      console.error(`Failed to update ${tableName}.${columnName}:`, error);
+      return { success: false, error: error.message };
+    }
+
+    return { 
+      success: true, 
+      data: data?.[0] || null,
+      message: `Successfully updated ${columnName} in ${tableName}`
+    };
+
+  } catch (error) {
+    console.error('Supabase column update failed:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+
 
 
