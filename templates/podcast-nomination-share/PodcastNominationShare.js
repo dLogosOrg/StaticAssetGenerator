@@ -23,10 +23,10 @@ export async function PodcastNominationShare({ props, templateType }) {
     const validationResult = PodcastNominationPropsSchema.safeParse(props || {});
     
     if (!validationResult.success) {
-      console.error('Props validation failed:', validationResult.error.errors);
+      console.error('Props validation failed:', validationResult.error.issues);
       return { 
         success: false, 
-        error: `Props validation failed: ${validationResult.error.errors.map(e => e.message).join(', ')}` 
+        error: `Props validation failed: ${validationResult.error.issues.map(e => e.message).join(', ')}` 
       };
     }
 
