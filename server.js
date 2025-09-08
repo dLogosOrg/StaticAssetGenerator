@@ -67,7 +67,7 @@ app.post('/generate/:templateType', async (req, res) => {
       });
     }
 
-    console.log('✅ Request completed successfully:', response.publicUrl);
+    console.log('✅ Request completed successfully:', response);
     res.json({ success: true, ...response });
 
   } catch (error) {
