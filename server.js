@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { handleTemplateRequest, getAvailableTemplateTypes, getTemplateInfo } from './templateRegistry.js';
 import { FALLBACK_BUCKET } from './constants.js';
+import { queueService } from './utils/queueService.js';
 
 dotenv.config();
 
@@ -54,21 +55,18 @@ app.post('/generate/:templateType', async (req, res) => {
       });
     }
 
-    console.log(`🎨 Handling template request: ${templateType}`);
+    console.log(`🎨 Queuing template request: ${templateType}`);
     console.log('Props:', props);
 
-    // controller
-    const response = await handleTemplateRequest(templateType, props);
+    // Add request to queue
+    const requestId = queueService.addRequest({
+      templateType,
+      props,
+      handler: handleTemplateRequest
+    });
 
-    if (!response.success) {
-      return res.status(500).json({ 
-        success: false, 
-        error: response.error || 'Internal server error' 
-      });
-    }
-
-    console.log('✅ Request completed successfully:', response);
-    res.json({ success: true, ...response });
+    // respond immediately; worker will continue in background
+    res.status(202).json({ success: true, accepted: true, message: `Request: ${requestId} queued` });
 
   } catch (error) {
     console.error('Error generating image:', error);
