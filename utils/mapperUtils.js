@@ -38,7 +38,6 @@ export class MapperUtils {
   static transformers = {
     formatNumber: (num) => num.toLocaleString(),
     extractInitials: (name) => name.split(' ').map(n => n[0]).join('').toUpperCase(),
-    createVoteSubtitle: (voteCount) => `Join ${voteCount.toLocaleString()} people who want to see this conversation happen`,
     formatFollowers: (followers) => `${followers.toLocaleString()} followers`
   };
 }

@@ -5,14 +5,24 @@ import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/s
 import { PODCAST_NOMINATION_SHARE_DIR, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
+function createVoteSubtitle(voteCount) {
+  if (typeof voteCount !== 'number' || voteCount <= 0) {
+    return 'Be the first to vote to see this conversation happen';
+  }
+  if (voteCount === 1) {
+    return 'Join 1 person who wants to see this conversation happen';
+  }
+  return `Join ${voteCount.toLocaleString()} people who want to see this conversation happen`;
+}
+
 const PodcastNominationPropsSchema = z.object({
   guestName: z.string().min(1, "Guest name is required"),
-  guestBio: z.string().min(1, "Guest bio is required"),
+  guestBio: z.string().optional(),
   guestImage: z.string().url("Guest image must be a valid URL"),
   podcastName: z.string().min(1, "Podcast name is required"),
-  podcastFollowers: z.number().int().min(0, "Followers must be a non-negative integer"),
+  podcastFollowers: z.number().int().min(0, "Followers must be a non-negative integer").optional(),
   podcastImage: z.string().url("Podcast image must be a valid URL"),
-  voteCount: z.number().int().min(0, "Vote count must be a non-negative integer"),
+  voteCount: z.number().int().min(0, "Vote count must be a non-negative integer").optional(),
   nominationId: z.uuid("Nomination ID must be a valid UUID"),
 });
 
@@ -41,15 +51,28 @@ export async function PodcastNominationShare({ props, templateType }) {
     const dataMappings = {
       'guestName': templateProps.guestName,
       'podcastName': templateProps.podcastName,
-      'subtitle': MapperUtils.transformers.createVoteSubtitle(templateProps.voteCount),
+      'subtitle': createVoteSubtitle(templateProps.voteCount),
       'guestInitials': MapperUtils.transformers.extractInitials(templateProps.guestName),
       'guestBadge': templateProps.guestName,
       'guestBio': templateProps.guestBio,
       'podcastBadge': templateProps.podcastName,
-      'podcastFollowers': MapperUtils.transformers.formatFollowers(templateProps.podcastFollowers)
+      'podcastFollowers': typeof templateProps.podcastFollowers === 'number' ? MapperUtils.transformers.formatFollowers(templateProps.podcastFollowers) : undefined
     };
 
     MapperUtils.mapTextProperties(document, dataMappings);
+    // Remove optional elements if not provided
+    if (!templateProps.guestBio) {
+      const bioEl = document.querySelector('[data-dynamic="guestBio"]');
+      if (bioEl && bioEl.parentNode) {
+        bioEl.parentNode.removeChild(bioEl);
+      }
+    }
+    if (templateProps.podcastFollowers === undefined || templateProps.podcastFollowers === null) {
+      const followersEl = document.querySelector('[data-dynamic="podcastFollowers"]');
+      if (followersEl && followersEl.parentNode) {
+        followersEl.parentNode.removeChild(followersEl);
+      }
+    }
     MapperUtils.replaceWithImage(document, 'guestImage', templateProps.guestImage, templateProps.guestName, 'profile-image');
     MapperUtils.replaceWithImage(document, 'podcastImage', templateProps.podcastImage, templateProps.podcastName, 'podcast-image');
 
