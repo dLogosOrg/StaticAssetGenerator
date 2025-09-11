@@ -5,11 +5,19 @@ import dotenv from 'dotenv';
 import { handleTemplateRequest, getAvailableTemplateTypes, getTemplateInfo } from './templateRegistry.js';
 import { FALLBACK_BUCKET } from './constants.js';
 import { queueService } from './services/queueService.js';
+import { authMiddleware } from './middlewares/authMiddleware.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const API_KEY = process.env.API_KEY;
+
+if (!API_KEY) {
+  console.error('❌ Error: API_KEY environment variable is required');
+  process.exit(1);
+}
 
 app.use(helmet());
 app.use(cors());
@@ -20,6 +28,9 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
+
+// Protect image generation operations
+app.use('/generate', authMiddleware(API_KEY));
 
 // GET endpoint to list available templates
 app.get('/templates', (req, res) => {
