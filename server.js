@@ -4,7 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { handleTemplateRequest, getAvailableTemplateTypes, getTemplateInfo } from './templateRegistry.js';
 import { FALLBACK_BUCKET } from './constants.js';
-import { queueService } from './utils/queueService.js';
+import { queueService } from './services/queueService.js';
 
 dotenv.config();
 
