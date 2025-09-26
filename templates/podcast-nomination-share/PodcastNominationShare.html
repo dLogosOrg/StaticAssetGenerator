@@ -96,7 +96,7 @@
             left: -16px;
             right: -16px;
             bottom: -16px;
-            background: linear-gradient(to right, #fbbf24, #f97316);
+            background: linear-gradient(to right, #FACC15, #CA8A04);
             border-radius: 50%;
             filter: blur(12px);
             opacity: 0.75;
@@ -261,6 +261,11 @@
             margin-top: 8px;
             line-height: 1.4;
             font-weight: 400;
+            display: -webkit-box;
+            line-clamp: 3;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .podcast-followers {
@@ -385,9 +390,9 @@
                     <br>
                     on <span class="podcast-name" data-dynamic="podcastName">The Joe Rogan Experience</span>
                 </h1>
-                <p class="subtitle" data-dynamic="subtitle">
+                <!-- <p class="subtitle" data-dynamic="subtitle">
                     Join 3,247 people who want to see this conversation happen
-                </p>
+                </p> -->
             </div>
 
             <!-- Speaker & Podcast Visual Connection -->
@@ -447,7 +452,7 @@
             <div class="dlogos-branding">
                 <div class="dlogos-branding-content">
                     <div class="powered-by-text-dm">POWERED BY</div>
-                    <img src="https://nlwezarmekvpiyifvudk.supabase.co/storage/v1/object/public/images/dLogos_white.png" alt="dLogos" class="dlogos-branding-logo">
+                    <img src="/dLogos_with_xyz.svg" alt="dLogos" class="dlogos-branding-logo">
                 </div>
             </div>
         </div>
