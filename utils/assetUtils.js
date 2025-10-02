@@ -6,7 +6,11 @@ export function injectStaticImageSrc(document, selector, path) {
 
   const baseUrl = process.env.BASE_URL;
 
-  element.setAttribute('src', `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`);
+  const source = `${baseUrl}${path.startsWith('/') ? '' : '/'}${path}`
+
+  console.log('Injecting static image src:', source);
+
+  element.setAttribute('src', source);
 }
 
 
