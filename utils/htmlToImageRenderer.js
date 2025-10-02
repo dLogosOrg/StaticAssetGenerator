@@ -2,28 +2,40 @@ import fs from 'fs';
 import puppeteer from 'puppeteer';
 import { POSSIBLE_PUPPETEER_EXECUTABLE_PATHS, PUPPETEER_ARGS } from '../constants.js';
 
+function pathExists(p) {
+  try { return Boolean(p) && fs.existsSync(p); } catch { return false; }
+}
+
 function resolveExecutablePath() {  
-  // For production environments, try to find Chrome in common locations
-  if (process.env.NODE_ENV === 'production') {
-    for (const chromePath of POSSIBLE_PUPPETEER_EXECUTABLE_PATHS) {
-      try {
-        if (fs.existsSync(chromePath)) {
-          console.log(`Found Chrome at: ${chromePath}`);
-          return chromePath;
-        }
-      } catch (e) {
-        // Continue to next path
-      }
+  // 1) Explicit override via env
+  const envPath = process.env.PUPPETEER_EXECUTABLE_PATH;
+  if (pathExists(envPath)) {
+    console.log(`Using Chrome executable from env: ${envPath}`);
+    return envPath;
+  }
+
+  // 2) Puppeteer's suggestion, but only if it exists on disk
+  try {
+    const suggested = puppeteer.executablePath();
+    if (pathExists(suggested)) {
+      return suggested;
+    } else if (suggested) {
+      console.warn(`Puppeteer suggested executable does not exist: ${suggested}`);
+    }
+  } catch (error) {
+    console.warn('Could not resolve Puppeteer suggested executable path:', error.message);
+  }
+
+  // 3) Search known locations (works in both dev and prod)
+  for (const chromePath of POSSIBLE_PUPPETEER_EXECUTABLE_PATHS) {
+    if (pathExists(chromePath)) {
+      console.log(`Found Chrome at: ${chromePath}`);
+      return chromePath;
     }
   }
-  
-  // Else, fallback to Puppeteer's bundled Chrome
-  try {
-    return puppeteer.executablePath();
-  } catch (error) {
-    console.warn('Could not resolve Puppeteer executable path:', error.message);
-    return undefined;
-  }
+
+  // 4) As a last resort, return undefined and let Puppeteer try default
+  return undefined;
 }
 
 async function waitForFonts(page, timeoutMs = 10000) { // 10s timeout
@@ -99,8 +111,15 @@ export async function generateImageBuffer(htmlContent) {
 
     const page = await browser.newPage();
 
-    await page.setContent(htmlContent, { waitUntil: "networkidle2" });
-    console.log("✅ HTML rendered in Puppeteer");
+    // Inject base URL into HTML so relative paths resolve correctly
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    const htmlWithBase = htmlContent.replace(
+      '<head>',
+      `<head><base href="${baseUrl}">`
+    );
+    
+    await page.setContent(htmlWithBase, { waitUntil: "networkidle2" });
+    console.log("✅ HTML rendered in Puppeteer with base URL:", baseUrl);
 
     // Ensure fonts and images are fully loaded and decoded
     await waitForFonts(page);

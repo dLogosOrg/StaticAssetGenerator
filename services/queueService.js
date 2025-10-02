@@ -48,9 +48,16 @@ class QueueService {
     try {
       // handle image generation and storage
       const result = await queueItem.handler(queueItem.templateType, queueItem.props);
-      console.log(`✅ Request ${queueItem.id} completed`);
-      
-      this.completedRequests.set(queueItem.id, result);
+
+      // Treat non-successful handler outcomes as failures
+      if (!result || result.success === false) {
+        const errorMessage = (result && result.error) ? result.error : 'Unknown error';
+        console.error(`❌ Request ${queueItem.id} failed (handler returned unsuccessful result): ${errorMessage}`);
+        this.failedRequests.set(queueItem.id, errorMessage);
+      } else {
+        console.log(`✅ Request ${queueItem.id} completed`);
+        this.completedRequests.set(queueItem.id, result);
+      }
     } catch (error) {
       console.error(`❌ Request ${queueItem.id} failed:`, error.message);
       
