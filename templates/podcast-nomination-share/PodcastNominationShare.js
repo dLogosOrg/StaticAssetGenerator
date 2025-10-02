@@ -4,7 +4,6 @@ import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
 import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/supabaseHelpers.js';
 import { PODCAST_NOMINATION_SHARE_DIR, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
-import { injectStaticImageSrc } from '../../utils/assetUtils.js';
 
 function createVoteSubtitle(voteCount) {
   if (typeof voteCount !== 'number' || voteCount <= 0) {
@@ -77,7 +76,6 @@ export async function PodcastNominationShare({ props, templateType }) {
     MapperUtils.replaceWithImage(document, 'guestImage', templateProps.guestImage, templateProps.guestName, 'profile-image');
     MapperUtils.replaceWithImage(document, 'podcastImage', templateProps.podcastImage, templateProps.podcastName, 'podcast-image');
 
-    injectStaticImageSrc(document, '.dlogos-branding-logo', '/dLogos_with_xyz.svg');
     const finalHtml = dom.serialize();
 
     // Step 1: Render image

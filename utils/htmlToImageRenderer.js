@@ -111,8 +111,15 @@ export async function generateImageBuffer(htmlContent) {
 
     const page = await browser.newPage();
 
-    await page.setContent(htmlContent, { waitUntil: "networkidle2" });
-    console.log("✅ HTML rendered in Puppeteer");
+    // Inject base URL into HTML so relative paths resolve correctly
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    const htmlWithBase = htmlContent.replace(
+      '<head>',
+      `<head><base href="${baseUrl}">`
+    );
+    
+    await page.setContent(htmlWithBase, { waitUntil: "networkidle2" });
+    console.log("✅ HTML rendered in Puppeteer with base URL:", baseUrl);
 
     // Ensure fonts and images are fully loaded and decoded
     await waitForFonts(page);
