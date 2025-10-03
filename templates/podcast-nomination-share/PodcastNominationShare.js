@@ -51,12 +51,9 @@ export async function PodcastNominationShare({ props, templateType }) {
     const dataMappings = {
       'guestName': templateProps.guestName,
       'podcastName': templateProps.podcastName,
-      'subtitle': createVoteSubtitle(templateProps.voteCount),
       'guestInitials': MapperUtils.transformers.extractInitials(templateProps.guestName),
       'guestBadge': templateProps.guestName,
-      'guestBio': templateProps.guestBio,
       'podcastBadge': templateProps.podcastName,
-      'podcastFollowers': typeof templateProps.podcastFollowers === 'number' ? MapperUtils.transformers.formatFollowers(templateProps.podcastFollowers) : undefined
     };
 
     MapperUtils.mapTextProperties(document, dataMappings);

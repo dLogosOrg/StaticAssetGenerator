@@ -23,7 +23,7 @@
             width: 100%;
             min-height: 100vh;
             margin: 0;
-            padding: 24px 16px;
+            padding: 40px 32px 100px 32px;
             position: relative;
         }
 
@@ -34,7 +34,7 @@
         }
 
         .main-title {
-            margin-bottom: 80px;
+            margin-bottom: 42px;
         }
 
         .main-title h1 {
@@ -47,7 +47,7 @@
         }
 
         .guest-name {
-            background: linear-gradient(to right, #f59e0b, #ea580c);
+            background: linear-gradient(to right, #fbbf24, #f59e0b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -92,14 +92,24 @@
 
         .guest-glow {
             position: absolute;
-            top: -16px;
-            left: -16px;
-            right: -16px;
-            bottom: -16px;
-            background: linear-gradient(to right, #FACC15, #CA8A04);
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: linear-gradient(to right, #fbbf24, #f59e0b);
             border-radius: 50%;
-            filter: blur(12px);
+            filter: blur(16px);
             opacity: 0.75;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.75;
+            }
+            50% {
+                opacity: 1;
+            }
         }
 
         .podcast-glow {
@@ -119,6 +129,12 @@
             background: white;
             padding: 8px;
             border-radius: 50%;
+            width: 176px;
+            height: 176px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .podcast-image-container {
@@ -126,6 +142,12 @@
             background: white;
             padding: 8px;
             border-radius: 20px;
+            width: 176px;
+            height: 176px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .profile-image {
@@ -133,6 +155,7 @@
             height: 160px;
             border-radius: 50%;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .podcast-image {
@@ -140,16 +163,20 @@
             height: 160px;
             border-radius: 16px;
             object-fit: cover;
+            flex-shrink: 0;
         }
 
         .guest-placeholder {
             width: 160px;
             height: 160px;
+            min-width: 160px;
+            min-height: 160px;
             border-radius: 50%;
             background: #dc2626;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .guest-initials {
@@ -161,11 +188,14 @@
         .podcast-placeholder {
             width: 160px;
             height: 160px;
+            min-width: 160px;
+            min-height: 160px;
             border-radius: 16px;
             background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .podcast-placeholder-text {
@@ -188,19 +218,25 @@
 
         .checkmark-badge {
             position: absolute;
-            bottom: -4px;
-            right: -4px;
+            bottom: 4px;
+            right: 4px;
             background: #3b82f6;
             color: white;
             border-radius: 50%;
-            padding: 12px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             border: 4px solid white;
+            flex-shrink: 0;
         }
 
         .checkmark-icon {
-            height: 24px;
             width: 24px;
+            height: 24px;
+            flex-shrink: 0;
         }
 
         .profile-info {
@@ -210,49 +246,23 @@
         }
 
         .guest-badge {
-            background: #fef3c7;
-            border: 1px solid #fde68a;
-            border-radius: 8px;
-            padding: 8px 12px;
-            color: #92400e;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .podcast-badge {
-            background: #f3e8ff;
-            border: 1px solid #e9d5ff;
-            border-radius: 8px;
-            padding: 8px 12px;
-            color: #7c3aed;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        /* Dark mode styles */
-        .dark .guest-badge {
-            background: rgba(120, 113, 108, 0.2);
-            border: 1px solid #57534e;
-            color: #fbbf24;
-        }
-
-        .dark .podcast-badge {
-            background: rgba(147, 51, 234, 0.2);
-            border: 1px solid #7c3aed;
-            color: #c4b5fd;
-        }
-
-        /* Force dark mode since we're using a dark theme */
-        .guest-badge {
             background: rgba(120, 113, 108, 0.2) !important;
             border: 1px solid #57534e !important;
             color: #fbbf24 !important;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .podcast-badge {
             background: rgba(147, 51, 234, 0.2) !important;
             border: 1px solid #7c3aed !important;
             color: #c4b5fd !important;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-weight: 600;
+            font-size: 14px;
         }
 
         .profile-bio {
@@ -280,13 +290,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 32px;
+            margin-top: 64px;
+            color: #94a3b8;
         }
 
         .arrow-icon {
-            width: 64px;
-            height: 64px;
-            color: white;
+            width: 48px;
+            height: 48px;
         }
 
         .arrow-text {
@@ -313,38 +323,17 @@
             }
         }
 
-        /* Powered by dLogos Banner */
-        .dlogos-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(to right, #a855f7, #c084fc);
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            box-shadow: 0 -4px 20px rgba(147, 51, 234, 0.3);
-        }
-
-        .dlogos-banner-text {
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-            letter-spacing: 0.025em;
-        }
-
-        .dlogos-logo {
-            height: 24px;
-            width: auto;
-            filter: brightness(0) invert(1);
-        }
-
         /* dLogos Branding Section */
         .dlogos-branding {
-            text-align: center;
+            position: fixed;
+            right: 50px;
+            bottom: 28px;
+            text-align: right;
             margin: 0px;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            height: 56px;
         }
 
         .dlogos-branding-content {
@@ -352,7 +341,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 12px;
         }
 
         .powered-by-text-dm {
@@ -365,7 +353,7 @@
         }
 
         .dlogos-branding-logo {
-            height: 60px;
+            height: 36px;
             width: auto;
             object-fit: contain;
         }
@@ -377,6 +365,42 @@
             letter-spacing: -0.025em;
             font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1;
+        }
+
+        /* Bottom-center Vote button */
+        .vote-cta-container {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 32px;
+            display: flex;
+            justify-content: center;
+            padding: 0 16px;
+            z-index: 40;
+            pointer-events: none;
+        }
+
+        .vote-cta-container .vote-button {
+            pointer-events: auto;
+            width: 114px;
+            height: 48px;
+            background: transparent;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            transform: translateZ(0);
+            transition: transform 200ms ease, filter 200ms ease;
+        }
+
+        .vote-cta-container .vote-button:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .vote-button-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
     </style>
 </head>
@@ -390,9 +414,6 @@
                     <br>
                     on <span class="podcast-name" data-dynamic="podcastName">The Joe Rogan Experience</span>
                 </h1>
-                <!-- <p class="subtitle" data-dynamic="subtitle">
-                    Join 3,247 people who want to see this conversation happen
-                </p> -->
             </div>
 
             <!-- Speaker & Podcast Visual Connection -->
@@ -405,16 +426,21 @@
                             <div class="guest-placeholder" data-dynamic="guestImage">
                                 <span class="guest-initials" data-dynamic="guestInitials">CH</span>
                             </div>
-                        </div>
-                        <div class="checkmark-badge">
-                            <svg class="checkmark-icon" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
+                            <div class="checkmark-badge">
+                                <svg class="checkmark-icon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                     <div class="profile-info">
                         <div class="guest-badge" data-dynamic="guestBadge">Coleman Hughes</div>
-                        <div class="profile-bio" data-dynamic="guestBio">Conversations w/Coleman Podcast | Forbes 30 Under 30</div>
+                        <!-- Guest Bio -->
+                        <!--
+                        <div class="profile-bio" data-dynamic="guestBio">
+                            Conversations w/Coleman Podcast | Forbes 30 Under 30
+                        </div>
+                        -->
                     </div>
                 </a>
 
@@ -425,7 +451,6 @@
                             <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                         </svg>
                     </div>
-                    <div class="arrow-text">TO APPEAR ON</div>
                 </div>
 
                 <!-- Podcast -->
@@ -443,7 +468,12 @@
                     </div>
                     <div class="profile-info">
                         <div class="podcast-badge" data-dynamic="podcastBadge">The Joe Rogan Experience</div>
-                        <div class="podcast-followers" data-dynamic="podcastFollowers">11,200,000 followers</div>
+                        <!-- Podcast Followers -->
+                        <!--
+                        <div class="podcast-followers" data-dynamic="podcastFollowers">
+                            11,200,000 followers
+                        </div>
+                        -->
                     </div>
                 </a>
             </div>
@@ -451,9 +481,26 @@
             <!-- dLogos Branding Section -->
             <div class="dlogos-branding">
                 <div class="dlogos-branding-content">
-                    <div class="powered-by-text-dm">POWERED BY</div>
                     <img src="/public/dLogos_with_xyz.svg" alt="dLogos" class="dlogos-branding-logo">
                 </div>
+            </div>
+            
+            <!-- Bottom-center Vote CTA -->
+            <div class="vote-cta-container">
+                <button class="vote-button" onclick="alert('Vote button clicked!')">
+                    <svg class="vote-button-svg" viewBox="0 0 114 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="1" y="1" width="112" height="46" rx="7" stroke="url(#paint0_linear_671_3942)" stroke-width="2"/>
+                        <path d="M26.3645 19.308L22.3685 30H20.3705L16.3745 19.308H18.2465L21.0185 26.832C21.1625 27.264 21.2885 27.696 21.3785 28.074H21.4505C21.5405 27.696 21.6665 27.264 21.8105 26.832L24.5825 19.308H26.3645ZM32.1189 19.182C35.3409 19.182 37.6449 21.504 37.6449 24.654C37.6449 27.804 35.3409 30.126 32.1189 30.126C28.9149 30.126 26.6109 27.804 26.6109 24.654C26.6109 21.504 28.9149 19.182 32.1189 19.182ZM32.1189 28.56C34.3149 28.56 35.8269 26.904 35.8269 24.654C35.8269 22.44 34.3149 20.748 32.1189 20.748C29.9409 20.748 28.4289 22.404 28.4289 24.654C28.4289 26.868 29.9409 28.56 32.1189 28.56ZM43.2135 30H41.4675V20.892H38.1915V19.308H46.5615L46.4355 20.892H43.2135V30ZM54.8218 19.308L54.6778 20.874H49.7638V23.844H53.8498V25.374H49.7638V28.434H54.9118V30H48.0178V19.308H54.8218ZM69.0927 19.308V30H67.5447L62.6667 23.214C62.3607 22.8 62.0907 22.368 61.8927 22.008H61.8207V30H60.1467V19.308H61.8567L66.5547 25.86C66.8607 26.274 67.1307 26.688 67.3287 27.048H67.4007V19.308H69.0927ZM76.24 19.182C79.462 19.182 81.766 21.504 81.766 24.654C81.766 27.804 79.462 30.126 76.24 30.126C73.036 30.126 70.732 27.804 70.732 24.654C70.732 21.504 73.036 19.182 76.24 19.182ZM76.24 28.56C78.436 28.56 79.948 26.904 79.948 24.654C79.948 22.44 78.436 20.748 76.24 20.748C74.062 20.748 72.55 22.404 72.55 24.654C72.55 26.868 74.062 28.56 76.24 28.56ZM97.4552 19.308L94.2692 30H92.3072L90.1652 23.394C90.0212 22.944 89.8952 22.458 89.8412 22.08H89.7692C89.7152 22.458 89.5892 22.944 89.4632 23.394L87.3212 30H85.3592L82.1732 19.308H84.0092L86.1332 26.778C86.2592 27.228 86.3492 27.588 86.4032 27.966H86.4932C86.5472 27.588 86.6372 27.228 86.7632 26.778L88.8692 20.082H90.8312L92.9372 26.778C93.0632 27.228 93.1712 27.588 93.2252 27.966H93.3152C93.3692 27.588 93.4592 27.246 93.5852 26.778L95.6912 19.308H97.4552Z" fill="white"/>
+                        <defs>
+                        <linearGradient id="paint0_linear_671_3942" x1="-10.5" y1="24" x2="123" y2="24" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#947845"/>
+                        <stop offset="0.5" stop-color="#FFCC5F"/>
+                        <stop offset="0.75" stop-color="#E0C995"/>
+                        <stop offset="1" stop-color="white"/>
+                        </linearGradient>
+                        </defs>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
