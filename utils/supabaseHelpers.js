@@ -23,9 +23,66 @@ function getSupabaseClient() {
   return cachedSupabaseClient;
 }
 
-// ============================================================================
 // STORAGE UTILITIES
-// ============================================================================
+
+async function ensureBucketExists(bucket) {
+  try {
+    const supabase = getSupabaseClient();
+    
+    // Check if bucket exists
+    const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+    if (listError) {
+      throw new Error(`Failed to list buckets: ${listError.message}`);
+    }
+    
+    const bucketExists = buckets.some(b => b.name === bucket);
+    
+    if (!bucketExists) {
+      // Create bucket if it doesn't exist
+      const { error: createError } = await supabase.storage.createBucket(bucket, {
+        public: true,
+        allowedMimeTypes: ['image/*'],
+        fileSizeLimit: '5MB'
+      });
+      
+      if (createError) {
+        throw new Error(`Failed to create bucket: ${createError.message}`);
+      }
+      
+      console.log(`Created bucket: ${bucket}`);
+    }
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to ensure bucket exists:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+async function ensureBucketExistsWithFallback(bucket) {
+  try {
+    // First try with the requested bucket
+    const result = await ensureBucketExists(bucket);
+    if (result.success) {
+      return { success: true, bucket };
+    }
+    
+    // If bucket creation failed, try with fallback bucket
+    console.warn(`Failed to create bucket '${bucket}', falling back to default bucket '${FALLBACK_BUCKET}'`);
+    
+    const fallbackResult = await ensureBucketExists(FALLBACK_BUCKET);
+    if (fallbackResult.success) {
+      return { success: true, bucket: FALLBACK_BUCKET, fallback: true };
+    }
+    
+    // If even fallback fails, return the error
+    return { success: false, error: `Failed to create both requested bucket '${bucket}' and fallback bucket '${FALLBACK_BUCKET}'` };
+    
+  } catch (error) {
+    console.error('Failed to ensure bucket exists with fallback:', error);
+    return { success: false, error: error.message };
+  }
+}
 
 function sanitizeFileName(fileName, defaultExt = 'png') {
   const base = fileName && String(fileName).trim().length > 0
@@ -55,19 +112,30 @@ async function uploadImageBufferToBucket({ bucket, objectPath, buffer }) {
     if (!objectPath) throw new Error('objectPath is required');
     if (!buffer) throw new Error('buffer is required');
 
+    // Ensure bucket exists before uploading
+    const ensureResult = await ensureBucketExistsWithFallback(bucket);
+    if (!ensureResult.success) {
+      throw new Error(`Failed to ensure bucket exists: ${ensureResult.error}`);
+    }
+
+    const actualBucket = ensureResult.bucket;
+
     const supabase = getSupabaseClient();
     const { error: uploadError } = await supabase
       .storage
-      .from(bucket)
+      .from(actualBucket)
       .upload(objectPath, buffer, { contentType: 'image/png', upsert: false });
 
     if (uploadError) {
       throw uploadError;
     }
 
-    const publicUrl = `${supabase.supabaseUrl}/storage/v1/object/public/${bucket}/${objectPath}`;
-
-    return { success: true, path: objectPath, publicUrl };
+    return { 
+      success: true, 
+      path: objectPath, 
+      bucket: actualBucket,
+      fallback: ensureResult.fallback || false
+    };
   } catch (error) {
     return { success: false, error: error.message };
   }
@@ -99,11 +167,25 @@ export async function uploadImageBufferToSupabase({
       return { success: false, error: uploadResult.error || 'Upload failed' };
     }
 
+    // Generate the public URL for the uploaded image
+    const supabase = getSupabaseClient();
+    const { data: publicUrlData } = supabase.storage
+      .from(uploadResult.bucket)
+      .getPublicUrl(uploadResult.path);
+    
+    // Log if fallback was used
+    if (uploadResult.fallback) {
+      console.log(`⚠️  Upload completed using fallback bucket '${uploadResult.bucket}' and root directory`);
+    }
+
+    console.log('Public url', publicUrlData.publicUrl);
+    
     return {
       success: true,
-      publicUrl: uploadResult.publicUrl,
-      bucket: target.bucket,
-      path: uploadResult.path
+      bucket: uploadResult.bucket,
+      path: uploadResult.path,
+      publicUrl: publicUrlData.publicUrl,
+      fallback: uploadResult.fallback || false // Include fallback information
     };
 
   } catch (error) {
@@ -112,9 +194,7 @@ export async function uploadImageBufferToSupabase({
   }
 }
 
-// ============================================================================
 // DATABASE UTILITIES
-// ============================================================================
 
 export async function updateSupabaseColumn({
   tableName,

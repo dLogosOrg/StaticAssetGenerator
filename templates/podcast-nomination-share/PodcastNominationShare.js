@@ -42,7 +42,7 @@ export async function PodcastNominationShare({ props, templateType }) {
 
     const safeProps = validationResult.data;
     const { nominationId, ...templateProps } = safeProps;
-    const fileName = `podcast-nomination-${Date.now()}`;
+    const fileName = `${Date.now()}`;
 
     // Read HTML template
     const html = readTemplate(templatePath);
@@ -89,7 +89,6 @@ export async function PodcastNominationShare({ props, templateType }) {
       templateType,
       fileName,
       bucket: SUPABASE_SEO_IMAGES_BUCKET,
-      baseDir: PODCAST_NOMINATION_SHARE_DIR,
     });
 
     if (!uploadResult.success) {
