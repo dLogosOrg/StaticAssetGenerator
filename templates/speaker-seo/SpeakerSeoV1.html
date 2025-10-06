@@ -37,19 +37,21 @@
       height: 100%;
     }
 
-    /* Title absolute positioning */
+    /* Title styling */
     .title {
       position: absolute;
-      left: 293px;
-      top: 93px;
       width: 1096px;
-      height: 168px;
-      font-family: "Author", "Inter", sans-serif;
-      font-size: 64px;
-      font-weight: 500;
-      line-height: 1.2;
-      color: white;
-      text-align: center;
+      left: 52px;
+      top: 65px;
+
+      font-family: 'Author', "Inter", sans-serif;
+      font-style: normal;
+      font-weight: 494;
+      font-size: 60px;
+      line-height: 66px;
+      text-align: center; /* left-aligned */
+      white-space: normal; /* allow wrapping */
+      color: #FFFFFF;
     }
 
     .speaker-name {
@@ -60,18 +62,18 @@
     /* Speaker avatar */
     .speaker-section {
       position: absolute;
-      left: 357px;
-      top: 292px;
+      left: 308.38px;
+      top: 253.38px;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 348px;
-      height: 348px;
+      width: 223.62px;
+      height: 223.62px;
     }
 
     .speaker-image-container {
-      width: 348px;
-      height: 348px;
+      width: 223.62px;
+      height: 223.62px;
       border-radius: 50%;
       overflow: hidden;
       background-color: #ffcc5f;
@@ -100,21 +102,21 @@
       font-weight: 700;
     }
 
-    /* Responsive adjustments (optional) */
     @media (max-width: 768px) {
       .title {
         left: 20px;
         top: 40px;
         width: calc(100% - 40px);
         font-size: 36px;
+        line-height: 40px;
       }
 
       .speaker-section {
         left: 50%;
         top: 200px;
         transform: translateX(-50%);
-        width: 240px;
-        height: 240px;
+        width: 160px;
+        height: 160px;
       }
 
       .speaker-initials {
@@ -125,13 +127,13 @@
 </head>
 <body>
   <!-- Background Image -->
-  <img src="/public/backgrounds/speaker_seo_bg_v1.svg" alt="" class="background-image">
+  <img src="/public/backgrounds/speaker_seo_bg_v1.png" alt="" class="background-image">
 
   <!-- Content Layer -->
   <div class="content">
     <!-- Title -->
     <h1 class="title">
-      Which podcast should <span class="speaker-name" data-dynamic="speakerName">Slavoj Žižek</span><br>go on next?
+      Which podcast should <span class="speaker-name" data-dynamic="speakerName">Slavoj Žižek</span> go on next?
     </h1>
 
     <!-- Speaker Section -->
@@ -140,8 +142,6 @@
         <div class="speaker-placeholder" data-dynamic="speakerImage">
           <span class="speaker-initials" data-dynamic="speakerInitials">SŽ</span>
         </div>
-        <!-- Uncomment below and comment above placeholder when using actual image -->
-        <!-- <img src="/public/speakers/slavoj_zizek.jpg" alt="Speaker" class="speaker-image" data-dynamic="speakerImage"> -->
       </div>
     </div>
   </div>

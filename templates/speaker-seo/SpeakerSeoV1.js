@@ -9,6 +9,9 @@ const SpeakerSeoV1PropsSchema = z.object({
   speakerId: z.string().min(1, "Speaker ID is required"),
   speakerName: z.string().min(1, "Speaker name is required"),
   speakerImage: z.string().url("Speaker image must be a valid URL").optional(),
+  sourceTable: z.enum(["profiles", "reserved_profiles"], {
+    errorMap: () => ({ message: "Table name must be either 'profiles' or 'reserved_profiles'" }),
+  }),
 });
 
 export async function SpeakerSeoV1({ props, templateType }) {
@@ -27,7 +30,7 @@ export async function SpeakerSeoV1({ props, templateType }) {
     }
 
     const safeProps = validationResult.data;
-    const { speakerId, ...templateProps } = safeProps;
+    const { speakerId, sourceTable, ...templateProps } = safeProps;
     const fileName = `${speakerId}-${Date.now()}`;
 
     // Read HTML template
@@ -58,8 +61,8 @@ export async function SpeakerSeoV1({ props, templateType }) {
     console.log('🎨 Rendering HTML to image...');
 
     const imageResult = await generateImageBuffer(finalHtml, {
-      viewportWidth: 1600,
-      viewportHeight: 900,
+      viewportWidth: 1200,
+      viewportHeight: 675,
       quality: 40,
     });
 
@@ -81,12 +84,12 @@ export async function SpeakerSeoV1({ props, templateType }) {
       return { success: false, error: uploadResult.error || 'Upload failed' };
     }
 
-    // Step 3: Update the speaker table with the image URL
+    // Step 3: Update the table with the image URL
     console.log('🔄 Updating speaker table with SEO image URL...');
     const updateResult = await updateSupabaseColumn({
-      tableName: 'speaker',
-      primaryKeyValue: speakerId,
+      tableName: sourceTable,
       primaryKeyColumn: 'id',
+      primaryKeyValue: speakerId,
       columnName: 'seo_image_url',
       columnValue: uploadResult.publicUrl
     });
