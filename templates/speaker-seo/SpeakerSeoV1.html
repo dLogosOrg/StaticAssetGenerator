@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speaker Podcast Vote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #000;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Title absolute positioning */
+    .title {
+      position: absolute;
+      left: 293px;
+      top: 93px;
+      width: 1096px;
+      height: 168px;
+      font-family: "Author", "Inter", sans-serif;
+      font-size: 64px;
+      font-weight: 500;
+      line-height: 1.2;
+      color: white;
+      text-align: center;
+    }
+
+    .speaker-name {
+      color: #ffcc5f;
+      font-weight: 700;
+    }
+
+    /* Speaker avatar */
+    .speaker-section {
+      position: absolute;
+      left: 357px;
+      top: 292px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 348px;
+      height: 348px;
+    }
+
+    .speaker-image-container {
+      width: 348px;
+      height: 348px;
+      border-radius: 50%;
+      overflow: hidden;
+      background-color: #ffcc5f;
+    }
+
+    .speaker-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .speaker-placeholder {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #ffcc5f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .speaker-initials {
+      color: white;
+      font-size: 96px;
+      font-weight: 700;
+    }
+
+    /* Responsive adjustments (optional) */
+    @media (max-width: 768px) {
+      .title {
+        left: 20px;
+        top: 40px;
+        width: calc(100% - 40px);
+        font-size: 36px;
+      }
+
+      .speaker-section {
+        left: 50%;
+        top: 200px;
+        transform: translateX(-50%);
+        width: 240px;
+        height: 240px;
+      }
+
+      .speaker-initials {
+        font-size: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Image -->
+  <img src="/public/backgrounds/speaker_seo_bg_v1.svg" alt="" class="background-image">
+
+  <!-- Content Layer -->
+  <div class="content">
+    <!-- Title -->
+    <h1 class="title">
+      Which podcast should <span class="speaker-name" data-dynamic="speakerName">Slavoj Žižek</span><br>go on next?
+    </h1>
+
+    <!-- Speaker Section -->
+    <div class="speaker-section">
+      <div class="speaker-image-container">
+        <div class="speaker-placeholder" data-dynamic="speakerImage">
+          <span class="speaker-initials" data-dynamic="speakerInitials">SŽ</span>
+        </div>
+        <!-- Uncomment below and comment above placeholder when using actual image -->
+        <!-- <img src="/public/speakers/slavoj_zizek.jpg" alt="Speaker" class="speaker-image" data-dynamic="speakerImage"> -->
+      </div>
+    </div>
+  </div>
+</body>
+</html>
