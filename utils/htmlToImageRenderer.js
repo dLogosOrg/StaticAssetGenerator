@@ -92,7 +92,7 @@ async function waitForImages(page, timeoutMs = 10000) { // 10s timeout
   }, timeoutMs);
 }
 
-export async function generateImageBuffer(htmlContent) {
+export async function generateImageBuffer(htmlContent, options = {}) {
   let browser;
 
   try {
@@ -125,11 +125,40 @@ export async function generateImageBuffer(htmlContent) {
     await waitForFonts(page);
     await waitForImages(page);
 
+    // Optionally set a fixed viewport to control screenshot dimensions
+    const { type, viewportWidth, viewportHeight, deviceScaleFactor, quality } = options || {};
+    let useFixedViewport = false;
+    if (Number.isInteger(viewportWidth) && Number.isInteger(viewportHeight) && viewportWidth > 0 && viewportHeight > 0) {
+      await page.setViewport({
+        width: viewportWidth,
+        height: viewportHeight,
+        deviceScaleFactor: Number.isFinite(deviceScaleFactor) && deviceScaleFactor > 0 ? deviceScaleFactor : 1
+      });
+      useFixedViewport = true;
+      console.log(`🖼️ Using fixed viewport: ${viewportWidth}x${viewportHeight} @${useFixedViewport ? (deviceScaleFactor || 1) : 1}x`);
+    }
+    
+
+    // Determine output type and quality
+    const requestedType = typeof type === 'string' ? type.toLowerCase() : undefined;
+    const hasQuality = Number.isInteger(quality) && quality >= 0 && quality <= 100;
+    const effectiveType = requestedType
+      ? requestedType
+      : (hasQuality ? 'jpeg' : 'png');
+
+    const screenshotOptions = {
+      type: effectiveType,
+      // If a fixed viewport is provided, capture only the viewport area; otherwise capture the full page
+      fullPage: !useFixedViewport
+    };
+
+    // Only include quality when supported and valid (jpeg/ webp only)
+    if ((effectiveType === 'jpeg' || effectiveType === 'webp') && hasQuality) {
+      screenshotOptions.quality = quality;
+    }
+
     console.log('📸 Taking screenshot...');
-    const buffer = await page.screenshot({
-      type: "png",
-      fullPage: true
-    });
+    const buffer = await page.screenshot(screenshotOptions);
 
     if (browser) await browser.close();
     console.log('✅ Screenshot captured');
