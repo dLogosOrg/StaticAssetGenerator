@@ -98,10 +98,10 @@ function buildObjectPath(baseDir, fileName) {
   return joined.replace(/^\/+/, '');
 }
 
-function prepareUploadTarget({ templateType, fileName, bucket, baseDir, date } = {}) {
+function prepareUploadTarget({ templateType, fileName, fileType, bucket, baseDir, date } = {}) {
   const targetBucket = bucket ?? FALLBACK_BUCKET;
   const targetBaseDir = baseDir ?? ""; // fallback to the root directory
-  const safeFileName = sanitizeFileName(fileName ?? `${templateType}-${Date.now()}`, 'png');
+  const safeFileName = sanitizeFileName(fileName ?? `${templateType}-${Date.now()}`, fileType);
   const objectPath = buildObjectPath(targetBaseDir, safeFileName);
   return { bucket: targetBucket, objectPath, fileName: safeFileName };
 }
@@ -145,6 +145,7 @@ export async function uploadImageBufferToSupabase({
   buffer,
   templateType,
   fileName,
+  fileType,
   bucket,
   baseDir = "",
 }) {
@@ -154,7 +155,7 @@ export async function uploadImageBufferToSupabase({
     }
 
     const selectedBucket = bucket ?? FALLBACK_BUCKET;
-    const target = prepareUploadTarget({ templateType, fileName, bucket: selectedBucket, baseDir });
+    const target = prepareUploadTarget({ templateType, fileName, bucket: selectedBucket, baseDir, fileType });
 
     // Upload the buffer
     const uploadResult = await uploadImageBufferToBucket({
