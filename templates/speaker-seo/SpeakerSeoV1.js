@@ -2,7 +2,7 @@ import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
 import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/supabaseHelpers.js';
-import { SPEAKER_SEO_DIR, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
+import { SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SPEAKER_SEO_DIR, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
 const SpeakerSeoV1PropsSchema = z.object({
@@ -60,11 +60,7 @@ export async function SpeakerSeoV1({ props, templateType }) {
     // Step 1: Render image
     console.log('🎨 Rendering HTML to image...');
 
-    const imageResult = await generateImageBuffer(finalHtml, {
-      viewportWidth: 1200,
-      viewportHeight: 675,
-      quality: 40,
-    });
+    const imageResult = await generateImageBuffer(finalHtml, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG);
 
     if (!imageResult.success) {
       return { success: false, error: imageResult.error || 'Failed to render image from HTML' };
