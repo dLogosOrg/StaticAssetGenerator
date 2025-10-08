@@ -17,34 +17,55 @@
             font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: hsl(224, 71.4%, 4.1%);
             min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
-            width: 100%;
-            min-height: 100vh;
+            width: 1200px;
+            height: 630px;
             margin: 0;
-            padding: 40px 32px 100px 32px;
+            padding: 40px 48px;
             position: relative;
+            overflow: hidden;
         }
 
         .hero-content {
             text-align: center;
             max-width: 1200px;
             margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 10px;
         }
 
         .main-title {
-            margin-bottom: 42px;
+            margin-bottom: 38px;
         }
 
         .main-title h1 {
-            font-size: 48px;
+            font-size: 52px;
             font-weight: 900;
             color: white;
             line-height: 1.1;
-            margin: 0 0 24px 0;
+            margin: 0;
+            padding-bottom: 10px;
             letter-spacing: -0.025em;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2; /* show max 2 lines */
+            line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-word;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 93%, rgba(0,0,0,0.95) 97%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 93%, rgba(0,0,0,0.95) 97%, rgba(0,0,0,0) 100%);
         }
+
 
         .guest-name {
             background: linear-gradient(to right, #fbbf24, #f59e0b);
@@ -63,7 +84,7 @@
         .subtitle {
             font-size: 20px;
             color: #cbd5e1;
-            max-width: 672px;
+            max-width: 800px;
             margin: 0 auto;
             font-weight: 500;
             line-height: 1.6;
@@ -73,9 +94,9 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            gap: 64px;
-            margin-top: 80px;
-            margin-bottom: 10px;
+            gap: 75px;
+            margin-top: 0px;
+            margin-bottom: 0px;
         }
 
         .profile-link {
@@ -92,13 +113,13 @@
 
         .guest-glow {
             position: absolute;
-            top: -8px;
-            left: -8px;
-            right: -8px;
-            bottom: -8px;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
             background: linear-gradient(to right, #fbbf24, #f59e0b);
             border-radius: 50%;
-            filter: blur(16px);
+            filter: blur(18px);
             opacity: 0.75;
             animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
@@ -114,23 +135,23 @@
 
         .podcast-glow {
             position: absolute;
-            top: -16px;
-            left: -16px;
-            right: -16px;
-            bottom: -16px;
+            top: -18px;
+            left: -18px;
+            right: -18px;
+            bottom: -18px;
             background: linear-gradient(to right, #a855f7, #3b82f6);
-            border-radius: 20px;
-            filter: blur(12px);
+            border-radius: 22px;
+            filter: blur(14px);
             opacity: 0.75;
         }
 
         .profile-image-container {
             position: relative;
             background: white;
-            padding: 8px;
+            padding: 9px;
             border-radius: 50%;
-            width: 176px;
-            height: 176px;
+            width: 205px;
+            height: 205px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -140,10 +161,10 @@
         .podcast-image-container {
             position: relative;
             background: white;
-            padding: 8px;
-            border-radius: 20px;
-            width: 176px;
-            height: 176px;
+            padding: 9px;
+            border-radius: 22px;
+            width: 205px;
+            height: 205px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -151,26 +172,26 @@
         }
 
         .profile-image {
-            width: 160px;
-            height: 160px;
+            width: 187px;
+            height: 187px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
         }
 
         .podcast-image {
-            width: 160px;
-            height: 160px;
-            border-radius: 16px;
+            width: 187px;
+            height: 187px;
+            border-radius: 18px;
             object-fit: cover;
             flex-shrink: 0;
         }
 
         .guest-placeholder {
-            width: 160px;
-            height: 160px;
-            min-width: 160px;
-            min-height: 160px;
+            width: 187px;
+            height: 187px;
+            min-width: 187px;
+            min-height: 187px;
             border-radius: 50%;
             background: #dc2626;
             display: flex;
@@ -181,16 +202,16 @@
 
         .guest-initials {
             color: white;
-            font-size: 32px;
+            font-size: 38px;
             font-weight: 700;
         }
 
         .podcast-placeholder {
-            width: 160px;
-            height: 160px;
-            min-width: 160px;
-            min-height: 160px;
-            border-radius: 16px;
+            width: 187px;
+            height: 187px;
+            min-width: 187px;
+            min-height: 187px;
+            border-radius: 18px;
             background: #000000;
             display: flex;
             align-items: center;
@@ -204,14 +225,14 @@
         }
 
         .podcast-placeholder-text div:first-child {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 700;
             margin-bottom: 4px;
             letter-spacing: 0.05em;
         }
 
         .podcast-placeholder-text div:last-child {
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 700;
             letter-spacing: 0.05em;
         }
@@ -223,8 +244,8 @@
             background: #3b82f6;
             color: white;
             border-radius: 50%;
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -234,41 +255,41 @@
         }
 
         .checkmark-icon {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             flex-shrink: 0;
         }
 
         .profile-info {
             margin-top: 24px;
             text-align: center;
-            max-width: 200px;
+            max-width: 240px;
         }
 
         .guest-badge {
             background: rgba(120, 113, 108, 0.2) !important;
             border: 1px solid #57534e !important;
             color: #fbbf24 !important;
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 9px;
+            padding: 9px 15px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .podcast-badge {
             background: rgba(147, 51, 234, 0.2) !important;
             border: 1px solid #7c3aed !important;
             color: #c4b5fd !important;
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 9px;
+            padding: 9px 15px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .profile-bio {
             color: #94a3b8;
-            font-size: 12px;
-            margin-top: 8px;
+            font-size: 13px;
+            margin-top: 9px;
             line-height: 1.4;
             font-weight: 400;
             display: -webkit-box;
@@ -280,8 +301,8 @@
 
         .podcast-followers {
             color: #94a3b8;
-            font-size: 12px;
-            margin-top: 8px;
+            font-size: 13px;
+            margin-top: 9px;
             font-weight: 400;
         }
 
@@ -290,50 +311,34 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 64px;
+            margin-top: 75px;
             color: #94a3b8;
         }
 
         .arrow-icon {
-            width: 82px;
-            height: 82px;
+            width: 95px;
+            height: 95px;
         }
 
         .arrow-text {
             color: #94a3b8;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
-            margin-top: 8px;
+            margin-top: 9px;
             text-align: center;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .speaker-podcast-connection {
-                flex-direction: column;
-                gap: 32px;
-            }
-
-            .main-title h1 {
-                font-size: 36px;
-            }
-
-            .subtitle {
-                font-size: 18px;
-            }
         }
 
         /* dLogos Branding Section */
         .dlogos-branding {
-            position: fixed;
-            right: 50px;
-            bottom: 28px;
+            position: absolute;
+            right: 55px;
+            bottom: 30px;
             text-align: right;
             margin: 0px;
             z-index: 50;
             display: flex;
             align-items: center;
-            height: 56px;
+            height: 65px;
         }
 
         .dlogos-branding-content {
@@ -345,7 +350,7 @@
 
         .powered-by-text-dm {
             color: #94a3b8;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             letter-spacing: 0.1em;
             font-family: 'DM Sans', sans-serif;
@@ -353,14 +358,14 @@
         }
 
         .dlogos-branding-logo {
-            height: 25px;
+            height: 30px;
             width: auto;
             object-fit: contain;
         }
 
         .dlogos-branding-text {
             color: white;
-            font-size: 40px;
+            font-size: 47px;
             font-weight: 900;
             letter-spacing: -0.025em;
             font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -369,22 +374,16 @@
 
         /* Bottom-center Vote button */
         .vote-cta-container {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 32px;
-            display: flex;
-            justify-content: center;
-            padding: 0 24px;
-            margin-right: 30px;
+            position: absolute;
+            left: 50%;
+            bottom: 40px;
+            transform: translateX(-55%);
             z-index: 40;
-            pointer-events: none;
         }
 
         .vote-cta-container .vote-button {
-            pointer-events: auto;
-            width: 162px;
-            height: 58px;
+            width: 190px;
+            height: 68px;
             background: transparent;
             border: 0;
             padding: 0;
@@ -436,12 +435,6 @@
                     </div>
                     <div class="profile-info">
                         <div class="guest-badge" data-dynamic="guestBadge">Coleman Hughes</div>
-                        <!-- Guest Bio -->
-                        <!--
-                        <div class="profile-bio" data-dynamic="guestBio">
-                            Conversations w/Coleman Podcast | Forbes 30 Under 30
-                        </div>
-                        -->
                     </div>
                 </a>
 
@@ -477,12 +470,6 @@
                     </div>
                     <div class="profile-info">
                         <div class="podcast-badge" data-dynamic="podcastBadge">The Joe Rogan Experience</div>
-                        <!-- Podcast Followers -->
-                        <!--
-                        <div class="podcast-followers" data-dynamic="podcastFollowers">
-                            11,200,000 followers
-                        </div>
-                        -->
                     </div>
                 </a>
             </div>

@@ -28,6 +28,12 @@ export const PUPPETEER_ARGS = [
   '--disable-features=VizDisplayCompositor'
 ];
 
+export const SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG = {
+  viewportWidth: 1200,
+  viewportHeight: 630,
+  quality: 70,
+}
+
 export const TEMPLATE_DIRECTORIES = {
   'podcast-nomination': PODCAST_NOMINATION_SHARE_DIR,
   'speaker-seo': SPEAKER_SEO_DIR

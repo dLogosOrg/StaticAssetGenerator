@@ -2,7 +2,7 @@ import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
 import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/supabaseHelpers.js';
-import { PODCAST_NOMINATION_SHARE_DIR, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
+import { PODCAST_NOMINATION_SHARE_DIR, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
 function createVoteSubtitle(voteCount) {
@@ -77,7 +77,8 @@ export async function PodcastNominationShare({ props, templateType }) {
 
     // Step 1: Render image
     console.log('🎨 Rendering HTML to image...');
-    const imageResult = await generateImageBuffer(finalHtml);
+    const imageResult = await generateImageBuffer(finalHtml, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG);
+
     if (!imageResult.success) {
       return { success: false, error: imageResult.error || 'Failed to render image from HTML' };
     }
@@ -88,6 +89,7 @@ export async function PodcastNominationShare({ props, templateType }) {
       buffer: imageResult.buffer,
       templateType,
       fileName,
+      fileType: "jpg",
       bucket: SUPABASE_SEO_IMAGES_BUCKET,
     });
 
