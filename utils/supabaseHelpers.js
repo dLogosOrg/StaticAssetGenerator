@@ -145,7 +145,7 @@ export async function uploadImageBufferToSupabase({
   buffer,
   templateType,
   fileName,
-  fileType,
+  fileType = "jpg",
   bucket,
   baseDir = "",
 }) {
