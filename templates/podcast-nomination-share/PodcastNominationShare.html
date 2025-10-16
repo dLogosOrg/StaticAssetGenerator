@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Podcast Nomination Share</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=author@400,500,700,1&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,208 +15,178 @@
 
         body {
             font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: hsl(224, 71.4%, 4.1%);
-            min-height: 100vh;
+            background-color: #000;
+            height: 100vh;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
-            width: 1200px;
-            height: 630px;
-            margin: 0;
-            padding: 40px 48px;
             position: relative;
-            overflow: hidden;
         }
 
-        .hero-content {
-            text-align: center;
-            max-width: 1200px;
-            margin: 0 auto;
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding-top: 10px;
+            object-fit: cover;
+            z-index: 1;
         }
 
-        .main-title {
-            margin-bottom: 38px;
+        .content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
         }
 
-        .main-title h1 {
-            font-size: 52px;
-            font-weight: 900;
-            color: white;
-            line-height: 1.1;
-            margin: 0;
-            padding-bottom: 10px;
-            letter-spacing: -0.025em;
+        /* Title styling */
+        .title {
+            position: absolute;
+            width: 932px;
+            left: 50%;
+            top: 54px;
+            transform: translateX(-50%);
+
+            color: #FFF;
+            text-align: center;
+            font-feature-settings: 'liga' off, 'clig' off;
+            font-family: 'Author', sans-serif;
+            font-size: 58px;
+            font-style: normal;
+            font-weight: 494;
+            line-height: 60px; /* 103.448% */
+            white-space: normal; /* allow wrapping */
+            word-break: break-word;
             display: -webkit-box;
             -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2; /* show max 2 lines */
+            -webkit-line-clamp: 2; /* max 2 lines */
             line-clamp: 2;
             overflow: hidden;
             text-overflow: ellipsis;
-            word-break: break-word;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 93%, rgba(0,0,0,0.95) 97%, rgba(0,0,0,0) 100%);
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 93%, rgba(0,0,0,0.95) 97%, rgba(0,0,0,0) 100%);
         }
 
-
         .guest-name {
-            background: linear-gradient(to right, #fbbf24, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--Amber, #FFCC5F);
+            font-feature-settings: 'liga' off, 'clig' off;
+            font-family: 'Author', sans-serif;
+            font-size: 58px;
+            font-style: normal;
+            font-weight: 596;
+            line-height: 60px;
         }
 
         .podcast-name {
-            background: linear-gradient(to right, #9333ea, #2563eb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--Violet, #826BFF);
+            font-feature-settings: 'liga' off, 'clig' off;
+            font-family: 'Author', sans-serif;
+            font-size: 58px;
+            font-style: normal;
+            font-weight: 596;
+            line-height: 60px;
         }
 
-        .subtitle {
-            font-size: 20px;
-            color: #cbd5e1;
-            max-width: 800px;
-            margin: 0 auto;
-            font-weight: 500;
-            line-height: 1.6;
-        }
-
-        .speaker-podcast-connection {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 75px;
-            margin-top: 0px;
-            margin-bottom: 0px;
-        }
-
-        .profile-link {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-        }
-
-        .profile-container {
-            position: relative;
-        }
-
-        .guest-glow {
+        /* Guest image */
+        .guest-section {
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: linear-gradient(to right, #fbbf24, #f59e0b);
-            border-radius: 50%;
-            filter: blur(18px);
-            opacity: 0.75;
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 0.75;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-
-        .podcast-glow {
-            position: absolute;
-            top: -18px;
-            left: -18px;
-            right: -18px;
-            bottom: -18px;
-            background: linear-gradient(to right, #a855f7, #3b82f6);
-            border-radius: 22px;
-            filter: blur(14px);
-            opacity: 0.75;
-        }
-
-        .profile-image-container {
-            position: relative;
-            background: white;
-            padding: 9px;
-            border-radius: 50%;
-            width: 205px;
-            height: 205px;
+            left: 279.62px;
+            top: 199.62px;
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 230.769px;
+            height: 230.769px;
+            flex-shrink: 0;
+        }
+
+        .guest-image-container {
+            width: 230.769px;
+            height: 230.769px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #ffcc5f;
+            fill: url(<path-to-image>) lightgray 50% / cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .guest-placeholder {
+            width: 230.769px;
+            height: 230.769px;
+            border-radius: 50%;
+            background: #ffcc5f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guest-initials {
+            color: white;
+            font-size: 96px;
+            font-weight: 700;
+        }
+
+        /* Podcast image */
+        .podcast-section {
+            position: absolute;
+            left: 698px;
+            top: 204px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 221px;
+            height: 221px;
             flex-shrink: 0;
         }
 
         .podcast-image-container {
             position: relative;
-            background: white;
-            padding: 9px;
-            border-radius: 22px;
-            width: 205px;
-            height: 205px;
+            width: 221px;
+            height: 221px;
+            border-radius: 16px;
+            background: linear-gradient(90deg, #947845, #FFCC5F, #E0C995, #FFFFFF);
+            padding: 2px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
-        .profile-image {
-            width: 187px;
-            height: 187px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
+        .podcast-image-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
+            background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .podcast-image {
-            width: 187px;
-            height: 187px;
-            border-radius: 18px;
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
             object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .guest-placeholder {
-            width: 187px;
-            height: 187px;
-            min-width: 187px;
-            min-height: 187px;
-            border-radius: 50%;
-            background: #dc2626;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .guest-initials {
-            color: white;
-            font-size: 38px;
-            font-weight: 700;
+            object-position: center;
+            display: block;
         }
 
         .podcast-placeholder {
-            width: 187px;
-            height: 187px;
-            min-width: 187px;
-            min-height: 187px;
-            border-radius: 18px;
+            width: 100%;
+            height: 100%;
+            border-radius: 14px;
             background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
         .podcast-placeholder-text {
@@ -236,258 +206,42 @@
             font-weight: 700;
             letter-spacing: 0.05em;
         }
-
-        .checkmark-badge {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: #3b82f6;
-            color: white;
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 4px solid white;
-            flex-shrink: 0;
-        }
-
-        .checkmark-icon {
-            width: 28px;
-            height: 28px;
-            flex-shrink: 0;
-        }
-
-        .profile-info {
-            margin-top: 24px;
-            text-align: center;
-            max-width: 240px;
-        }
-
-        .guest-badge {
-            background: rgba(120, 113, 108, 0.2) !important;
-            border: 1px solid #57534e !important;
-            color: #fbbf24 !important;
-            border-radius: 9px;
-            padding: 9px 15px;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .podcast-badge {
-            background: rgba(147, 51, 234, 0.2) !important;
-            border: 1px solid #7c3aed !important;
-            color: #c4b5fd !important;
-            border-radius: 9px;
-            padding: 9px 15px;
-            font-weight: 600;
-            font-size: 15px;
-        }
-
-        .profile-bio {
-            color: #94a3b8;
-            font-size: 13px;
-            margin-top: 9px;
-            line-height: 1.4;
-            font-weight: 400;
-            display: -webkit-box;
-            line-clamp: 3;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .podcast-followers {
-            color: #94a3b8;
-            font-size: 13px;
-            margin-top: 9px;
-            font-weight: 400;
-        }
-
-        .connection-arrow {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 75px;
-            color: #94a3b8;
-        }
-
-        .arrow-icon {
-            width: 95px;
-            height: 95px;
-        }
-
-        .arrow-text {
-            color: #94a3b8;
-            font-size: 15px;
-            font-weight: 500;
-            margin-top: 9px;
-            text-align: center;
-        }
-
-        /* dLogos Branding Section */
-        .dlogos-branding {
-            position: absolute;
-            right: 55px;
-            bottom: 30px;
-            text-align: right;
-            margin: 0px;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            height: 65px;
-        }
-
-        .dlogos-branding-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .powered-by-text-dm {
-            color: #94a3b8;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            font-family: 'DM Sans', sans-serif;
-            text-transform: uppercase;
-        }
-
-        .dlogos-branding-logo {
-            height: 30px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .dlogos-branding-text {
-            color: white;
-            font-size: 47px;
-            font-weight: 900;
-            letter-spacing: -0.025em;
-            font-family: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1;
-        }
-
-        /* Bottom-center Vote button */
-        .vote-cta-container {
-            position: absolute;
-            left: 50%;
-            bottom: 40px;
-            transform: translateX(-55%);
-            z-index: 40;
-        }
-
-        .vote-cta-container .vote-button {
-            width: 190px;
-            height: 68px;
-            background: transparent;
-            border: 0;
-            padding: 0;
-            cursor: pointer;
-            transition: transform 200ms ease, filter 200ms ease;
-        }
-        
-        .vote-button-img {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: contain;
-        }
-
-        .vote-cta-container .vote-button:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero-content">
-            <!-- Main Title -->
-            <div class="main-title">
-                <h1>
-                    Get <span class="guest-name" data-dynamic="guestName">Coleman Hughes</span>
-                    <br>
-                    on <span class="podcast-name" data-dynamic="podcastName">The Joe Rogan Experience</span>
-                </h1>
-            </div>
+  <!-- Background Image -->
+  <img src="/public/backgrounds/nomination_seo_bg_v1.png" alt="" class="background-image">
 
-            <!-- Speaker & Podcast Visual Connection -->
-            <div class="speaker-podcast-connection">
-                <!-- Guest Profile -->
-                <a href="/speakers" class="profile-link" data-dynamic="guestLink">
-                    <div class="profile-container">
-                        <div class="guest-glow"></div>
-                        <div class="profile-image-container">
-                            <div class="guest-placeholder" data-dynamic="guestImage">
-                                <span class="guest-initials" data-dynamic="guestInitials">CH</span>
-                            </div>
-                            <div class="checkmark-badge">
-                                <svg class="checkmark-icon" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile-info">
-                        <div class="guest-badge" data-dynamic="guestBadge">Coleman Hughes</div>
-                    </div>
-                </a>
+  <!-- Content Layer -->
+  <div class="content">
+    <!-- Title -->
+    <h1 class="title">
+      Get <span class="guest-name" data-dynamic="guestName">Coleman Hughes</span>
+      on <span class="podcast-name" data-dynamic="podcastName">The Joe Rogan Experience</span>
+    </h1>
 
-                <!-- Connection Arrow -->
-                <div class="connection-arrow">
-                    <div>
-                        <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 17L11 12L6 7M13 17L18 12L13 7" stroke="url(#paint0_linear_565_3596)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <defs>
-                                <linearGradient id="paint0_linear_565_3596" x1="3.03333" y1="12" x2="20.5667" y2="12" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#947845"/>
-                                    <stop offset="0.4" stop-color="#FFCC5F"/>
-                                    <stop offset="0.7" stop-color="#E0C995"/>
-                                    <stop offset="0.9" stop-color="white"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Podcast -->
-                <a href="/podcasts/the-joe-rogan-experience" class="profile-link" data-dynamic="podcastLink">
-                    <div class="profile-container">
-                        <div class="podcast-glow"></div>
-                        <div class="podcast-image-container">
-                            <div class="podcast-placeholder" data-dynamic="podcastImage">
-                                <div class="podcast-placeholder-text">
-                                    <div>THE JOE ROGAN</div>
-                                    <div>EXPERIENCE</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile-info">
-                        <div class="podcast-badge" data-dynamic="podcastBadge">The Joe Rogan Experience</div>
-                    </div>
-                </a>
-            </div>
-
-            <!-- dLogos Branding Section -->
-            <div class="dlogos-branding">
-                <div class="dlogos-branding-content">
-                    <img src="/public/dLogos_with_xyz.svg" alt="dLogos" class="dlogos-branding-logo">
-                </div>
-            </div>
-            
-            <!-- Bottom-center Vote CTA -->
-            <div class="vote-cta-container">
-                <button class="vote-button" onclick="alert('Vote button clicked!')">
-                    <img src="/public/vote_now_cta.svg" alt="Vote Now" class="vote-button-img">
-                </button>
-            </div>
+    <!-- Guest Section -->
+    <div class="guest-section">
+      <div class="guest-image-container">
+        <div class="guest-placeholder" data-dynamic="guestImage">
+          <span class="guest-initials" data-dynamic="guestInitials">CH</span>
         </div>
+      </div>
     </div>
+
+    <!-- Podcast Section -->
+    <div class="podcast-section">
+      <div class="podcast-image-container">
+        <div class="podcast-image-inner">
+          <div class="podcast-placeholder" data-dynamic="podcastImage">
+            <div class="podcast-placeholder-text">
+              <div>THE JOE ROGAN</div>
+              <div>EXPERIENCE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
