@@ -2,24 +2,21 @@ import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
 import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/supabaseHelpers.js';
-import { SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SPEAKER_SEO_DIR, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
+import { PODCAST_SEO_DIR, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
-const SpeakerSeoV1PropsSchema = z.object({
-  speakerId: z.string().min(1, "Speaker ID is required"),
-  speakerName: z.string().min(1, "Speaker name is required"),
-  speakerImage: z.string().url("Speaker image must be a valid URL").optional(),
-  sourceTable: z.enum(["profiles", "reserved_profiles"], {
-    errorMap: () => ({ message: "Table name must be either 'profiles' or 'reserved_profiles'" }),
-  }),
+const PodcastSeoV1PropsSchema = z.object({
+  podcastId: z.string().min(1, "Podcast ID is required"),
+  podcastName: z.string().min(1, "Podcast name is required"),
+  podcastImage: z.string().url("Podcast image must be a valid URL").optional(),
 });
 
-export async function SpeakerSeoV1({ props, templateType }) {
-  const templatePath = `${SPEAKER_SEO_DIR}/SpeakerSeoV1.html`;
+export async function PodcastSeoV1({ props, templateType }) {
+  const templatePath = `${PODCAST_SEO_DIR}/PodcastSeoV1.html`;
   const fileType = 'jpg'
 
   try {
-    const validationResult = SpeakerSeoV1PropsSchema.safeParse(props || {});
+    const validationResult = PodcastSeoV1PropsSchema.safeParse(props || {});
     
     if (!validationResult.success) {
       console.error('Props validation failed:', validationResult.error.issues);
@@ -30,28 +27,27 @@ export async function SpeakerSeoV1({ props, templateType }) {
     }
 
     const safeProps = validationResult.data;
-    const { speakerId, sourceTable, ...templateProps } = safeProps;
-    const fileName = `${speakerId}-${Date.now()}-v1`;
+    const { podcastId, ...templateProps } = safeProps;
+    const fileName = `${podcastId}-${Date.now()}-v1`;
 
     // Read HTML template
     const html = readTemplate(templatePath);
     const { dom, document } = MapperUtils.createDOM(html);
 
     const dataMappings = {
-      'speakerName': templateProps.speakerName,
-      'speakerInitials': MapperUtils.transformers.extractInitials(templateProps.speakerName),
+      'podcastName': templateProps.podcastName,
     };
 
     MapperUtils.mapTextProperties(document, dataMappings);
 
-    // Replace speaker image if provided
-    if (templateProps.speakerImage) {
+    // Replace podcast image if provided
+    if (templateProps.podcastImage) {
       MapperUtils.replaceWithImage(
         document, 
-        'speakerImage', 
-        templateProps.speakerImage, 
-        templateProps.speakerName, 
-        'speaker-image'
+        'podcastImage', 
+        templateProps.podcastImage, 
+        templateProps.podcastName, 
+        'podcast-image'
       );
     }
 
@@ -81,26 +77,26 @@ export async function SpeakerSeoV1({ props, templateType }) {
     }
 
     // Step 3: Update the table with the image URL
-    console.log('🔄 Updating speaker table with SEO image URL...');
+    console.log('🔄 Updating podcast table with SEO image URL...');
     const updateResult = await updateSupabaseColumn({
-      tableName: sourceTable,
+      tableName: 'podcasts',
       primaryKeyColumn: 'id',
-      primaryKeyValue: speakerId,
+      primaryKeyValue: podcastId,
       columnName: 'seo_image_url',
       columnValue: uploadResult.publicUrl
     });
     
     if (!updateResult.success) {
-      console.error('❌ Failed to update speaker table:', updateResult.error);
+      console.error('❌ Failed to update podcast table:', updateResult.error);
       return { success: false, error: `Database update failed: ${updateResult.error}` };
     }
     
-    console.log('✅ Successfully updated speaker table with SEO image URL');
+    console.log('✅ Successfully updated podcast table with SEO image URL');
 
     return uploadResult;
 
   } catch (error) {
-    console.error('SpeakerSeoV1 handler failed:', error);
+    console.error('PodcastSeoV1 handler failed:', error);
     return { success: false, error: error.message };
   }
 }

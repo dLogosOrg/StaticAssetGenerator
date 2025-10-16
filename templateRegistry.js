@@ -1,6 +1,7 @@
 import { PodcastNominationShare } from './templates/podcast-nomination-share/PodcastNominationShare.js';
-import { PODCAST_NOMINATION_SHARE_DIR, SPEAKER_SEO_DIR } from './constants.js';
+import { PODCAST_NOMINATION_SHARE_DIR, SPEAKER_SEO_DIR, PODCAST_SEO_DIR } from './constants.js';
 import { SpeakerSeoV1 } from './templates/speaker-seo/SpeakerSeoV1.js';
+import { PodcastSeoV1 } from './templates/podcast-seo/PodcastSeoV1.js';
 
 // Maps template types to their processing functions
 export const templateRegistry = {
@@ -11,6 +12,10 @@ export const templateRegistry = {
   'speaker-seo-v1': {
     handler: SpeakerSeoV1,
     directory: SPEAKER_SEO_DIR
+  },
+  'podcast-seo-v1': {
+    handler: PodcastSeoV1,
+    directory: PODCAST_SEO_DIR
   }
 };
 
