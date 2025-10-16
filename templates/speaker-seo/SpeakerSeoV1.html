@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Speaker Podcast Vote</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=author@400,500,700,1&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -40,43 +41,55 @@
     /* Title styling */
     .title {
       position: absolute;
-      width: 1096px;
-      left: 52px;
-      top: 30px;
+      width: 807px;
+      left: 50%;
+      top: 54px;
+      transform: translateX(-50%);
 
-      font-family: 'Author', "Inter", sans-serif;
+      color: #FFF;
+      text-align: center;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: 'Author', sans-serif;
+      font-size: 58px;
       font-style: normal;
       font-weight: 494;
-      font-size: 60px;
-      line-height: 66px;
-      text-align: center; /* left-aligned */
+      line-height: 60px; /* 103.448% */
       white-space: normal; /* allow wrapping */
-      color: #FFFFFF;
     }
 
     .speaker-name {
-      color: #ffcc5f;
-      font-weight: 700;
+      background: var(--Gold, linear-gradient(90deg, #947845 -24.72%, #FFCC5F 33.72%, #E0C995 77.56%, #FFF 106.78%));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-feature-settings: 'liga' off, 'clig' off;
+      font-family: 'Author', sans-serif;
+      font-size: 58px;
+      font-style: normal;
+      font-weight: 596;
+      line-height: 60px;
     }
 
     /* Speaker avatar */
     .speaker-section {
       position: absolute;
-      left: 309px;
-      top: 231.38px;
+      left: 297.23px;
+      top: 217.23px;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 223.62px;
-      height: 223.62px;
+      width: 221.538px;
+      height: 221.538px;
+      flex-shrink: 0;
     }
 
     .speaker-image-container {
-      width: 223.62px;
-      height: 223.62px;
+      width: 221.538px;
+      height: 221.538px;
       border-radius: 50%;
       overflow: hidden;
       background-color: #ffcc5f;
+      fill: url(<path-to-image>) lightgray 50% / cover no-repeat;
     }
 
     .speaker-image {
