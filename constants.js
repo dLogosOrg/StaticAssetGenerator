@@ -6,6 +6,7 @@ export const FALLBACK_BUCKET = 'generated-images';
 // directories
 export const PODCAST_NOMINATION_SHARE_DIR = 'podcast-nomination-share';
 export const SPEAKER_SEO_DIR = 'speaker-seo';
+export const PODCAST_SEO_DIR = 'podcast-seo';
 
 // puppeteer configs
 export const POSSIBLE_PUPPETEER_EXECUTABLE_PATHS = [
@@ -36,5 +37,6 @@ export const SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG = {
 
 export const TEMPLATE_DIRECTORIES = {
   'podcast-nomination': PODCAST_NOMINATION_SHARE_DIR,
-  'speaker-seo': SPEAKER_SEO_DIR
+  'speaker-seo': SPEAKER_SEO_DIR,
+  'podcast-seo-v1': PODCAST_SEO_DIR
 };
