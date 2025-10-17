@@ -8,7 +8,7 @@ import { z } from 'zod';
 const PodcastSeoV1PropsSchema = z.object({
   podcastId: z.string().min(1, "Podcast ID is required"),
   podcastName: z.string().min(1, "Podcast name is required"),
-  podcastImage: z.string().url("Podcast image must be a valid URL").optional(),
+  podcastImage: z.string().url("Podcast image must be a valid URL").or(z.literal("")).optional(),
 });
 
 export async function PodcastSeoV1({ props, templateType }) {
@@ -40,8 +40,8 @@ export async function PodcastSeoV1({ props, templateType }) {
 
     MapperUtils.mapTextProperties(document, dataMappings);
 
-    // Replace podcast image if provided
-    if (templateProps.podcastImage) {
+    // Replace podcast image if provided and not empty
+    if (templateProps.podcastImage && templateProps.podcastImage.trim() !== '') {
       MapperUtils.replaceWithImage(
         document, 
         'podcastImage', 

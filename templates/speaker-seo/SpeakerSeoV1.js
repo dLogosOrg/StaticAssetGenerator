@@ -8,7 +8,7 @@ import { z } from 'zod';
 const SpeakerSeoV1PropsSchema = z.object({
   speakerId: z.string().min(1, "Speaker ID is required"),
   speakerName: z.string().min(1, "Speaker name is required"),
-  speakerImage: z.string().url("Speaker image must be a valid URL").optional(),
+  speakerImage: z.string().url("Speaker image must be a valid URL").or(z.literal("")).optional(),
   sourceTable: z.enum(["profiles", "reserved_profiles"], {
     errorMap: () => ({ message: "Table name must be either 'profiles' or 'reserved_profiles'" }),
   }),
@@ -44,8 +44,8 @@ export async function SpeakerSeoV1({ props, templateType }) {
 
     MapperUtils.mapTextProperties(document, dataMappings);
 
-    // Replace speaker image if provided
-    if (templateProps.speakerImage) {
+    // Replace speaker image if provided and not empty
+    if (templateProps.speakerImage && templateProps.speakerImage.trim() !== '') {
       MapperUtils.replaceWithImage(
         document, 
         'speakerImage', 

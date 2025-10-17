@@ -18,10 +18,10 @@ function createVoteSubtitle(voteCount) {
 const PodcastNominationPropsSchema = z.object({
   guestName: z.string().min(1, "Guest name is required"),
   guestBio: z.string().optional(),
-  guestImage: z.string().url("Guest image must be a valid URL"),
+  guestImage: z.string().url("Guest image must be a valid URL").or(z.literal("")).optional(),
   podcastName: z.string().min(1, "Podcast name is required"),
   podcastFollowers: z.number().int().min(0, "Followers must be a non-negative integer").optional(),
-  podcastImage: z.string().url("Podcast image must be a valid URL"),
+  podcastImage: z.string().url("Podcast image must be a valid URL").or(z.literal("")).optional(),
   voteCount: z.number().int().min(0, "Vote count must be a non-negative integer").optional(),
   nominationId: z.uuid("Nomination ID must be a valid UUID"),
 });
@@ -70,8 +70,16 @@ export async function PodcastNominationShare({ props, templateType }) {
         followersEl.parentNode.removeChild(followersEl);
       }
     }
-    MapperUtils.replaceWithImage(document, 'guestImage', templateProps.guestImage, templateProps.guestName, 'profile-image');
-    MapperUtils.replaceWithImage(document, 'podcastImage', templateProps.podcastImage, templateProps.podcastName, 'podcast-image');
+    
+    // Replace guest image if provided and not empty
+    if (templateProps.guestImage && templateProps.guestImage.trim() !== '') {
+      MapperUtils.replaceWithImage(document, 'guestImage', templateProps.guestImage, templateProps.guestName, 'profile-image');
+    }
+    
+    // Replace podcast image if provided and not empty
+    if (templateProps.podcastImage && templateProps.podcastImage.trim() !== '') {
+      MapperUtils.replaceWithImage(document, 'podcastImage', templateProps.podcastImage, templateProps.podcastName, 'podcast-image');
+    }
 
     const finalHtml = dom.serialize();
 
