@@ -1,7 +1,7 @@
 import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
-import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/supabaseHelpers.js';
+import { uploadImageBufferToSupabase } from '../../utils/supabaseHelpers.js';
 import { PODCAST_NOMINATION_SHARE_DIR, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
@@ -16,14 +16,15 @@ function createVoteSubtitle(voteCount) {
 }
 
 const PodcastNominationPropsSchema = z.object({
-  guestName: z.string().min(1, "Guest name is required"),
-  guestBio: z.string().optional(),
-  guestImage: z.string().url("Guest image must be a valid URL").or(z.literal("")).optional(),
-  podcastName: z.string().min(1, "Podcast name is required"),
-  podcastFollowers: z.number().int().min(0, "Followers must be a non-negative integer").optional(),
-  podcastImage: z.string().url("Podcast image must be a valid URL").or(z.literal("")).optional(),
-  voteCount: z.number().int().min(0, "Vote count must be a non-negative integer").optional(),
-  nominationId: z.uuid("Nomination ID must be a valid UUID"),
+  guestName: z.string().min(1),
+  guestBio: z.string().optional().default(""),
+  guestImage: z.string().optional().default(""),
+  podcastName: z.string().min(1),
+  podcastFollowers: z.number().optional().int().nonnegative(),
+  podcastImage: z.string().optional().default(""),
+  voteCount: z.number().optional().int().positive(),
+  podcastId: z.string().min(1),
+  xHandle: z.string().min(1)
 });
 
 export async function PodcastNominationShare({ props, templateType }) {
@@ -41,8 +42,8 @@ export async function PodcastNominationShare({ props, templateType }) {
     }
 
     const safeProps = validationResult.data;
-    const { nominationId, ...templateProps } = safeProps;
-    const fileName = `${Date.now()}`;
+    const { podcastId, xHandle, ...templateProps } = safeProps;
+    const fileName = `${podcastId}_${xHandle}`;
 
     // Read HTML template
     const html = readTemplate(templatePath);
@@ -104,23 +105,6 @@ export async function PodcastNominationShare({ props, templateType }) {
     if (!uploadResult.success) {
       return { success: false, error: uploadResult.error || 'Upload failed' };
     }
-
-    // Step 3: Update the podcast_nomination table with the image URL
-    console.log('🔄 Updating podcast_nomination table with image URL...');
-    const updateResult = await updateSupabaseColumn({
-      tableName: 'podcast_nomination',
-      primaryKeyValue: nominationId,
-      primaryKeyColumn: 'id',
-      columnName: 'image_url',
-      columnValue: uploadResult.publicUrl
-    });
-    
-    if (!updateResult.success) {
-      console.error('❌ Failed to update podcast_nomination table:', updateResult.error);
-      return { success: false, error: `Database update failed: ${updateResult.error}` };
-    }
-    
-    console.log('✅ Successfully updated podcast_nomination table with image URL');
 
     return uploadResult;
 
