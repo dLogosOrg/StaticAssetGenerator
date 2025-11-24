@@ -52,9 +52,9 @@ const PodcastNominationPropsSchema = z.object({
   guestBio: z.string().optional().default(""),
   guestImage: z.string().optional().default(""),
   podcastName: z.string().min(1),
-  podcastFollowers: z.number().optional().int().nonnegative(),
+  podcastFollowers: z.number().int().nonnegative().optional(),
   podcastImage: z.string().optional().default(""),
-  voteCount: z.number().optional().int().positive(),
+  voteCount: z.number().int().positive().optional(),
   podcastId: z.string().min(1),
   xHandle: z.string().min(1)
 });
