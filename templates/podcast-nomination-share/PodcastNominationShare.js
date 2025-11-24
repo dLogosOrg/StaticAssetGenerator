@@ -1,7 +1,7 @@
 import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
-import { uploadImageBufferToSupabase } from '../../utils/supabaseHelpers.js';
+import { uploadImageBufferToSupabase, getSupabaseClient } from '../../utils/supabaseHelpers.js';
 import { PODCAST_NOMINATION_SHARE_DIR, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
@@ -13,6 +13,38 @@ function createVoteSubtitle(voteCount) {
     return 'Join 1 person who wants to see this conversation happen';
   }
   return `Join ${voteCount.toLocaleString()} people who want to see this conversation happen`;
+}
+
+async function getPodcastSlugById(podcastId) {
+  try {
+    if (!podcastId) throw new Error('podcastId is required');
+
+    const supabase = getSupabaseClient();
+    
+    const { data, error } = await supabase
+      .from('podcasts')
+      .select('slug')
+      .eq('id', podcastId)
+      .single();
+
+    if (error) {
+      console.error(`Failed to fetch podcast slug for id ${podcastId}:`, error);
+      return { success: false, error: error.message };
+    }
+
+    if (!data || !data.slug) {
+      return { success: false, error: `Podcast with id ${podcastId} not found or slug is missing` };
+    }
+
+    return { 
+      success: true, 
+      slug: data.slug
+    };
+
+  } catch (error) {
+    console.error('Failed to get podcast slug:', error);
+    return { success: false, error: error.message };
+  }
 }
 
 const PodcastNominationPropsSchema = z.object({
@@ -43,7 +75,20 @@ export async function PodcastNominationShare({ props, templateType }) {
 
     const safeProps = validationResult.data;
     const { podcastId, xHandle, ...templateProps } = safeProps;
-    const fileName = `${podcastId}_${xHandle}`;
+
+    // Query Supabase to get podcast slug
+    console.log(`🔍 Fetching podcast slug for id: ${podcastId}...`);
+    const slugResult = await getPodcastSlugById(podcastId);
+    
+    if (!slugResult.success) {
+      return { 
+        success: false, 
+        error: slugResult.error || 'Failed to fetch podcast slug' 
+      };
+    }
+    
+    const podcastSlug = slugResult.slug;
+    console.log(`✅ Found podcast slug: ${podcastSlug}`);
 
     // Read HTML template
     const html = readTemplate(templatePath);
@@ -92,20 +137,27 @@ export async function PodcastNominationShare({ props, templateType }) {
       return { success: false, error: imageResult.error || 'Failed to render image from HTML' };
     }
 
-    // Step 2: Upload the image
-    console.log('📤 Uploading image to Supabase...');
+    // Step 2: Upload the image to Supabase storage in nominations directory
+    console.log('📤 Uploading image to Supabase storage (nominations directory)...');
+    
+    // Create filename: xhandle_podcastSlug.jpg
+    const fileName = `${xHandle}_${podcastSlug}.jpg`;
+    
     const uploadResult = await uploadImageBufferToSupabase({
       buffer: imageResult.buffer,
       templateType,
       fileName,
       fileType: "jpg",
       bucket: SUPABASE_SEO_IMAGES_BUCKET,
+      baseDir: "nominations",
     });
 
     if (!uploadResult.success) {
       return { success: false, error: uploadResult.error || 'Upload failed' };
     }
 
+    console.log(`✅ Image saved to Supabase storage: ${uploadResult.path}`);
+    
     return uploadResult;
 
   } catch (error) {
