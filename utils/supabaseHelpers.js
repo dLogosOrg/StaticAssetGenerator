@@ -4,7 +4,7 @@ import { FALLBACK_BUCKET } from '../constants.js';
 
 let cachedSupabaseClient = null;
 
-function getSupabaseClient() {
+export function getSupabaseClient() {
   if (cachedSupabaseClient) return cachedSupabaseClient;
 
   const supabaseUrl = process.env.SUPABASE_URL;

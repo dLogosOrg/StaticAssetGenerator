@@ -1,8 +1,9 @@
 import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
-import { uploadImageBufferToSupabase, updateSupabaseColumn } from '../../utils/supabaseHelpers.js';
+import { uploadImageBufferToSupabase } from '../../utils/supabaseHelpers.js';
 import { PODCAST_NOMINATION_SHARE_DIR, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
+import { cleanXHandle } from '../../utils/xHandleUtils.js';
 import { z } from 'zod';
 
 function createVoteSubtitle(voteCount) {
@@ -16,14 +17,18 @@ function createVoteSubtitle(voteCount) {
 }
 
 const PodcastNominationPropsSchema = z.object({
-  guestName: z.string().min(1, "Guest name is required"),
-  guestBio: z.string().optional(),
-  guestImage: z.string().url("Guest image must be a valid URL").or(z.literal("")).optional(),
-  podcastName: z.string().min(1, "Podcast name is required"),
-  podcastFollowers: z.number().int().min(0, "Followers must be a non-negative integer").optional(),
-  podcastImage: z.string().url("Podcast image must be a valid URL").or(z.literal("")).optional(),
-  voteCount: z.number().int().min(0, "Vote count must be a non-negative integer").optional(),
-  nominationId: z.uuid("Nomination ID must be a valid UUID"),
+  guestName: z.string().min(1),
+  guestBio: z.string().optional().default(""),
+  guestImage: z.string().optional().default(""),
+  podcastName: z.string().min(1),
+  podcastSlug: z.string().min(1),
+  podcastFollowers: z.number().int().nonnegative().optional(),
+  podcastImage: z.string().optional().default(""),
+  voteCount: z.number().int().positive().optional(),
+  xHandle: z.string()
+    .min(1, { message: 'xHandle is required' })
+    .transform((value) => cleanXHandle(value))
+    .refine(handle => !!handle, { message: 'xHandle is required' })
 });
 
 export async function PodcastNominationShare({ props, templateType }) {
@@ -41,8 +46,7 @@ export async function PodcastNominationShare({ props, templateType }) {
     }
 
     const safeProps = validationResult.data;
-    const { nominationId, ...templateProps } = safeProps;
-    const fileName = `${Date.now()}`;
+    const { podcastSlug, xHandle, ...templateProps } = safeProps;
 
     // Read HTML template
     const html = readTemplate(templatePath);
@@ -91,37 +95,27 @@ export async function PodcastNominationShare({ props, templateType }) {
       return { success: false, error: imageResult.error || 'Failed to render image from HTML' };
     }
 
-    // Step 2: Upload the image
-    console.log('📤 Uploading image to Supabase...');
+    // Step 2: Upload the image to Supabase storage in nominations directory
+    console.log('📤 Uploading image to Supabase storage (nominations directory)...');
+    
+    // Create filename: xhandle_podcastSlug.jpg
+    const fileName = `${xHandle}_${podcastSlug}.jpg`;
+    
     const uploadResult = await uploadImageBufferToSupabase({
       buffer: imageResult.buffer,
       templateType,
       fileName,
       fileType: "jpg",
       bucket: SUPABASE_SEO_IMAGES_BUCKET,
+      baseDir: "nominations",
     });
 
     if (!uploadResult.success) {
       return { success: false, error: uploadResult.error || 'Upload failed' };
     }
 
-    // Step 3: Update the podcast_nomination table with the image URL
-    console.log('🔄 Updating podcast_nomination table with image URL...');
-    const updateResult = await updateSupabaseColumn({
-      tableName: 'podcast_nomination',
-      primaryKeyValue: nominationId,
-      primaryKeyColumn: 'id',
-      columnName: 'image_url',
-      columnValue: uploadResult.publicUrl
-    });
+    console.log(`✅ Image saved to Supabase storage: ${uploadResult.path}`);
     
-    if (!updateResult.success) {
-      console.error('❌ Failed to update podcast_nomination table:', updateResult.error);
-      return { success: false, error: `Database update failed: ${updateResult.error}` };
-    }
-    
-    console.log('✅ Successfully updated podcast_nomination table with image URL');
-
     return uploadResult;
 
   } catch (error) {
