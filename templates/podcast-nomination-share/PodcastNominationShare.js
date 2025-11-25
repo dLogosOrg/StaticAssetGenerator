@@ -3,6 +3,7 @@ import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
 import { uploadImageBufferToSupabase } from '../../utils/supabaseHelpers.js';
 import { PODCAST_NOMINATION_SHARE_DIR, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
+import { cleanXHandle } from '../../utils/xHandleUtils.js';
 import { z } from 'zod';
 
 function createVoteSubtitle(voteCount) {
@@ -24,7 +25,10 @@ const PodcastNominationPropsSchema = z.object({
   podcastFollowers: z.number().int().nonnegative().optional(),
   podcastImage: z.string().optional().default(""),
   voteCount: z.number().int().positive().optional(),
-  xHandle: z.string().min(1)
+  xHandle: z.string()
+    .min(1, { message: 'xHandle is required' })
+    .transform((value) => cleanXHandle(value))
+    .refine(handle => !!handle, { message: 'xHandle is required' })
 });
 
 export async function PodcastNominationShare({ props, templateType }) {
