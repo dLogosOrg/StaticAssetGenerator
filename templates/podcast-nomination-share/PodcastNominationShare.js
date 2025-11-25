@@ -1,7 +1,7 @@
 import { readTemplate } from '../../utils/templateReader.js';
 import { MapperUtils } from '../../utils/mapperUtils.js';
 import { generateImageBuffer } from '../../utils/htmlToImageRenderer.js';
-import { uploadImageBufferToSupabase, getSupabaseClient } from '../../utils/supabaseHelpers.js';
+import { uploadImageBufferToSupabase } from '../../utils/supabaseHelpers.js';
 import { PODCAST_NOMINATION_SHARE_DIR, SOCIAL_MEDIA_PREVIEW_IMAGE_CONFIG, SUPABASE_SEO_IMAGES_BUCKET } from '../../constants.js';
 import { z } from 'zod';
 
@@ -15,47 +15,15 @@ function createVoteSubtitle(voteCount) {
   return `Join ${voteCount.toLocaleString()} people who want to see this conversation happen`;
 }
 
-async function getPodcastSlugById(podcastId) {
-  try {
-    if (!podcastId) throw new Error('podcastId is required');
-
-    const supabase = getSupabaseClient();
-    
-    const { data, error } = await supabase
-      .from('podcasts')
-      .select('slug')
-      .eq('id', podcastId)
-      .single();
-
-    if (error) {
-      console.error(`Failed to fetch podcast slug for id ${podcastId}:`, error);
-      return { success: false, error: error.message };
-    }
-
-    if (!data || !data.slug) {
-      return { success: false, error: `Podcast with id ${podcastId} not found or slug is missing` };
-    }
-
-    return { 
-      success: true, 
-      slug: data.slug
-    };
-
-  } catch (error) {
-    console.error('Failed to get podcast slug:', error);
-    return { success: false, error: error.message };
-  }
-}
-
 const PodcastNominationPropsSchema = z.object({
   guestName: z.string().min(1),
   guestBio: z.string().optional().default(""),
   guestImage: z.string().optional().default(""),
   podcastName: z.string().min(1),
+  podcastSlug: z.string().min(1),
   podcastFollowers: z.number().int().nonnegative().optional(),
   podcastImage: z.string().optional().default(""),
   voteCount: z.number().int().positive().optional(),
-  podcastId: z.string().min(1),
   xHandle: z.string().min(1)
 });
 
@@ -74,21 +42,7 @@ export async function PodcastNominationShare({ props, templateType }) {
     }
 
     const safeProps = validationResult.data;
-    const { podcastId, xHandle, ...templateProps } = safeProps;
-
-    // Query Supabase to get podcast slug
-    console.log(`🔍 Fetching podcast slug for id: ${podcastId}...`);
-    const slugResult = await getPodcastSlugById(podcastId);
-    
-    if (!slugResult.success) {
-      return { 
-        success: false, 
-        error: slugResult.error || 'Failed to fetch podcast slug' 
-      };
-    }
-    
-    const podcastSlug = slugResult.slug;
-    console.log(`✅ Found podcast slug: ${podcastSlug}`);
+    const { podcastSlug, xHandle, ...templateProps } = safeProps;
 
     // Read HTML template
     const html = readTemplate(templatePath);
