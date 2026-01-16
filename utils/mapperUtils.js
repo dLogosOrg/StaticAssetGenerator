@@ -1,4 +1,5 @@
 import { JSDOM } from 'jsdom';
+import { cleanImageUrl } from './imageUrlUtils.js';
 
 /**
  * Simple utility for mapping props to HTML templates
@@ -21,7 +22,8 @@ export class MapperUtils {
     const placeholder = document.querySelector(`[data-dynamic="${dataAttr}"]`);
     if (placeholder) {
       const img = document.createElement('img');
-      img.src = imageSrc;
+      // Clean the image URL to remove suffixes and query parameters
+      img.src = cleanImageUrl(imageSrc);
       img.alt = altText;
       if (className) img.className = className;
       placeholder.parentNode.replaceChild(img, placeholder);
